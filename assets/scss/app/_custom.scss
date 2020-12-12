@@ -1,0 +1,176 @@
+button {
+  outline: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+.link-text {
+  color: $dark !important;
+}
+
+.container.container--fluid {
+  padding: 0 !important;
+}
+
+.custom-btn {
+  border-radius: $border-radius !important;
+
+  &--text {
+    font-size: 1em;
+    font-weight: 300;
+    padding: 5px 10px;
+
+    @media #{map-get($display-breakpoints, 'md-and-up')} {
+      font-size: 1.1em;
+    }
+  }
+
+  &__secondary {
+    color: $primary;
+  }
+
+  &__densed {
+    background-color: $secondary;
+    color: $dark;
+    padding: 7px 10px;
+    font-weight: 400;
+    transition: background-color, color 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+    @media #{map-get($display-breakpoints, 'md-and-up')} {
+      padding: 7px 15px;
+    }
+
+    &:hover {
+      background-color: $primary;
+      color: $light;
+    }
+  }
+
+  &__block {
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  &:disabled {
+    background-color: lightgray !important;
+
+    &:hover {
+      cursor: auto;
+    }
+  }
+}
+
+.form-title {
+  font-size: 1.1em;
+  font-weight: 500;
+}
+
+.item--title {
+  color: $dark;
+  font-size: 1.6rem;
+  font-weight: bold;
+  display: inline;
+  padding: 0 10px;
+  background: linear-gradient(
+      transparent 0 60%,
+      white 60% 88%,
+      transparent 88% 100%
+    )
+    no-repeat;
+
+  &__secondary-ribbon {
+    color: $dark;
+    background: linear-gradient(
+        transparent 0 60%,
+        $secondary 60% 88%,
+        transparent 88% 100%
+      )
+      no-repeat;
+  }
+}
+
+.vue-notification {
+  padding: 10px;
+  margin: 0 5px 5px;
+
+  font-size: 1em;
+
+  color: #ffffff;
+  background: $primary;
+  border-left: 5px solid;
+
+  &.warn {
+    background: $warning !important;
+    border-left-color: #f48a06 !important;
+  }
+
+  &.error {
+    background: $danger !important;
+    border-left-color: #b82e24 !important;
+  }
+
+  &.success {
+    background: $success !important;
+    border-left-color: #42a85f !important;
+  }
+}
+
+.v-stepper__step__step .v-icon.v-icon {
+  font-size: 1rem !important;
+}
+
+/*
+* Transitions
+*/
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-to-side-enter-active,
+.slide-to-side-leave-active {
+  transition-duration: 0.5s;
+  transition-property: height, opacity, transform;
+  transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.slide-to-side-enter,
+.slide-to-side-leave-to {
+  transform: translateX(15px);
+}
+
+.spin-enter-active,
+.spin-leave-active {
+  transition: all 0.3s ease;
+}
+
+.spin-enter {
+  transform: rotate(30deg);
+  opacity: 0;
+}
+
+.spin-leave-to {
+  transform: rotate(-30deg);
+  opacity: 0;
+}
+
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition-duration: 0.5s;
+  transition-property: height, opacity, transform;
+  transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.slide-down-enter,
+.slide-down-leave-to {
+  transform: translateY(15px);
+  opacity: 0;
+}

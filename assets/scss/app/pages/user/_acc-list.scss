@@ -1,0 +1,10 @@
+.acc-list {
+  .search-field {
+    margin-bottom: 15px;
+
+    @media #{map-get($display-breakpoints, 'md-and-up')} {
+      width: 50%;
+      margin-left: auto;
+    }
+  }
+}

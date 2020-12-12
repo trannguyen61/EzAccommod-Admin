@@ -1,0 +1,16 @@
+.custom-navbar {
+  display: flex;
+  align-items: center;
+  padding: 10px 10px;
+
+  @media #{map-get($display-breakpoints, 'md-and-up')} {
+    padding: 20px 40px;
+  }
+
+  .logo {
+    font-family: "Playfair Display", serif;
+    font-size: 2em;
+    color: $primary;
+    margin-right: auto;
+  }
+}
