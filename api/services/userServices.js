@@ -1,14 +1,15 @@
 import {
-    API_GET_ROOM_LIST
+    API_SIGNUP,
+    API_LOGIN,
 } from '@/api/apiUrl'
 
 export default $axios => ({
     signup (payload) {
-        // return $axios.get(API_GET_ROOM_LIST)
+        return $axios.post(API_SIGNUP, payload)
     },
 
     login (payload) {
-        // return $axios.get(API_GET_ROOM_LIST)
+        return $axios.post(API_LOGIN, payload)
     },
 
     getUserProfile (payload) {

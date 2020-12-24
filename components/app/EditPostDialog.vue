@@ -10,9 +10,8 @@
       </v-card-title>
 
       <div class="card-content">
-        <create-post-stepper
+        <create-general-post-stepper
           :post="post"
-          @on-get-post-fee="onGetPostFee"
           @on-submit-post="onSubmitPost"
         />
       </div>
@@ -33,13 +32,13 @@
 </template>
 
 <script>
-import CreatePostStepper from '@/components/app/CreatePostStepper'
+import CreateGeneralPostStepper from '@/components/app/CreateGeneralPostStepper'
 
 import ApiHandler from '@/helpers/ApiHandler'
 import { mapActions } from 'vuex'
 
 export default {
-    components: { CreatePostStepper },
+    components: { CreateGeneralPostStepper },
 
     props: {
         post: {
@@ -57,24 +56,14 @@ export default {
     methods: {
         ...mapActions({
             editPost: 'room/editPost',
-            getPostFee: 'room/getPostFee'
         }),
 
         async onSubmitPost (form) {
+            console.log(form)
             const data = form
             const handler = new ApiHandler()
                             .setData(data)
             await this.editPost(handler)
-        },
-
-        async onGetPostFee (time) {
-            const data = { time }
-            const handler = new ApiHandler()
-                            .setData(data)
-                            .setOnResponse(res => {
-                                this.postFee = res
-                            })
-            await this.getPostFee(handler)
         },
 
         open () {

@@ -28,13 +28,50 @@
 
     <!-- Button for medium and up screens + Logged in -->
     <template v-if="$vuetify.breakpoint.mdAndUp && loggedIn">
-      <v-btn
-        to="/app"
-        nuxt
-        icon
+      <v-menu
+        open-on-hover
+        bottom
+        offset-y
       >
-        <v-icon>fas fa-user</v-icon>
-      </v-btn>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            icon
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-icon>fas fa-user</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item>
+            <v-list-item-title>
+              <button
+                v-ripple
+                class="custom-btn custom-btn--text custom-btn__block"
+                text
+              >
+                <nuxt-link to="/app">
+                  Thông tin cá nhân
+                </nuxt-link>
+              </button>
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-title>
+              <button
+                v-ripple
+                class="custom-btn custom-btn--text custom-btn__block"
+                text
+                @click="onLogout"
+              >
+                Đăng xuất
+              </button>
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </template>
 
     <!-- Button group for medium and up screens + Not logged in yet -->
@@ -90,26 +127,57 @@
             <button
               v-ripple
               class="custom-btn custom-btn--text"
+              @click="$router.push('/auth/register')"
             >
               Đăng ký
             </button>
             <button
               v-ripple
               class="custom-btn custom-btn--text custom-btn__secondary"
+              @click="$router.push('auth/login')"
             >
               Đăng nhập
             </button>
           </v-list>
         </template>
 
-        <template v-else />
+        <template v-else>
+          <v-list>
+            <v-list-item>
+              <v-list-item-title>
+                <button
+                  v-ripple
+                  class="custom-btn custom-btn--text custom-btn__block"
+                  text
+                >
+                  <nuxt-link to="/app">
+                    Thông tin cá nhân
+                  </nuxt-link>
+                </button>
+              </v-list-item-title>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-title>
+                <button
+                  v-ripple
+                  class="custom-btn custom-btn--text custom-btn__block"
+                  text
+                  @click="onLogout"
+                >
+                  Đăng xuất
+                </button>
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </template>
       </v-menu>
     </template>
   </nav>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   props: {
@@ -130,6 +198,17 @@ export default {
     ...mapGetters({
       loggedIn: 'user/loggedIn'
     })
+  },
+
+  methods: {
+    ...mapActions({
+      logout: 'user/logout'
+    }),
+    
+    async onLogout () {
+      this.logout()
+      this.$router.push('/')
+    }
   }
 }
 </script>

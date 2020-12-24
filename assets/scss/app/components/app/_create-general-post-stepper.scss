@@ -1,0 +1,27 @@
+.create-general-post-stepper {
+  .demo-ilust {
+    width: 100%;
+  }
+
+  .stepper-input {
+    margin-top: 15px;
+    margin-left: 10px;
+    margin-right: 10px;
+
+    @media #{map-get($display-breakpoints, 'md-and-up')} {
+      margin-top: 20px;
+      margin-left: 30px;
+      margin-right: 30px;
+    }
+  }
+
+  .stepper-btn {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    margin-left: 10px;
+
+    @media #{map-get($display-breakpoints, 'md-and-up')} {
+      margin-left: 30px;
+    }
+  }
+}

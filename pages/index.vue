@@ -9,6 +9,7 @@
         <v-form
           v-model="formValue"
           class="auth-form--form"
+          @submit.prevent="onLogin"
         >
           <v-text-field
             v-model="form.email"
@@ -20,19 +21,26 @@
           <v-text-field
             v-model="form.password"
             :rules="validPassword()"
+            :append-icon="showPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"
+            :type="showPassword ? 'text' : 'password'"
             label="Mật khẩu"
             class="mt-6"
+            @click:append="showPassword = !showPassword"
           />
 
           <button
             v-ripple
-            type="button"
-            :disabled="!formValue"
+            type="submit"
+            :disabled="!formValue || loading"
             class="custom-btn custom-btn--text custom-btn__densed custom-btn__block mt-6"
-            @click="onLogin"
           >
             Đăng nhập
           </button>
+          <v-progress-linear
+            v-if="loading"
+            indeterminate
+            color="primary"
+          />
         </v-form>
       </div>
     </div>
@@ -48,6 +56,8 @@ export default {
     data () {
         return {
             tab: null,
+            loading: false,
+            showPassword: false,
             formValue: false,
             form: {
                 email: '',
@@ -62,11 +72,16 @@ export default {
         }),
 
         async onLogin () {
+          this.loading = true
+
           const data = this.form
           const handler = new ApiHandler()
                         .setData(data)
                         .setOnResponse(() => {
-                          this.$router.push('/')
+                          this.$router.push('/app')
+                        })
+                        .setOnFinally(() => {
+                          this.loading = false
                         })
           await this.login(handler)
         },

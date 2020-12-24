@@ -92,6 +92,17 @@ a {
   }
 }
 
+.truncate {
+  max-width: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:hover {
+    max-width: unset;
+  }
+}
+
 .vue-notification {
   padding: 10px;
   margin: 0 5px 5px;

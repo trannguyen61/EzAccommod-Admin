@@ -6,6 +6,7 @@
 
     <div class="post-list--content">
       <v-data-table
+        fixed-header
         :headers="headers"
         :items="rooms"
         :options.sync="options"
@@ -14,7 +15,7 @@
         multi-sort
       >
         <template #item.type="{ item }">
-          {{ defaultRoom.roomTypes.find(e => e.value == item.type).name || '' }}
+          {{ defaultRoom.roomTypes.find(e => e.id == item.type).name || '' }}
         </template>
         <template #item.checked="{ item }">
           <v-icon
@@ -30,11 +31,14 @@
             far fa-circle
           </v-icon>
         </template>
+        <template #item.expiredAt="{ item }">
+          {{ onFormatISOdate(item.expiredAt) }}
+        </template>
         <template #item.active="{ item }">
           <v-switch
             :readonly="!item.checked"
             :input-value="item.active"
-            @change="onToggleActivePost"
+            @mousedown="onCheckActivePost(item)"
           />
         </template>
         <template #item.edit="{ item }">
@@ -66,12 +70,12 @@
             type="button"
             class="custom-btn custom-btn--text"
           >
-            <a :href="`http://localhost:3000/${item.id}`">
+            <nuxt-link :to="`/${item.id}`">
               Chi tiết
               <v-icon class="ml-2">
                 fas fa-chevron-right
               </v-icon>
-            </a>
+            </nuxt-link>
           </button>
         </template>
         <template #no-data>
@@ -94,54 +98,34 @@
       ref="edit-post-dialog"
       :post="chosenPost"
     />
+    <confirm-dialog
+      ref="confirm-dialog"
+      :title="'Thông báo'"
+      :text="'Bài đăng cần tối thiểu 1 ảnh khái quát nhà và tối thiểu 3 ảnh cho mỗi loại phòng. Hãy cập nhật để bắt đầu cho thuê.'"
+      @confirm="onClickEditBtn"
+    />
   </div>
 </template>
 
 <script>
 import ProlongTimeDialog from '@/components/app/ProlongTimeDialog'
 import EditPostDialog from '@/components/app/EditPostDialog'
+import ConfirmDialog from '@/components/ConfirmDialog'
 
+import { formatISOdate } from '@/helpers/dateHelper'
 import { ROOM_TYPES } from '@/consts/consts'
 import ApiHandler from '@/helpers/ApiHandler'
 import { mapActions } from 'vuex'
 
 export default {
 
-    components: { ProlongTimeDialog, EditPostDialog },
+    components: { ProlongTimeDialog, EditPostDialog, ConfirmDialog },
+
     layout: 'app',
 
     data () {
         return {
-            rooms: [{
-                id: '123',
-                type: 1,
-                roomNum: 2,
-                square: 30,
-                address: 'Giữa Hồ Gươm - Hoàn Kiếm - Hà Nội',
-                detailAddress: 'Cạnh vườn hoa Lý Thái Tổ',
-                price: '1.000.000',
-                facilities: [1, 2, 3],
-                favorite: 10,
-                views: 100,
-                checked: true,
-                active: false,
-                dueDate: '06/01/2021',
-                fee: '1.500.000'
-            }, {
-                id: '124',
-                type: 3,
-                roomNum: 2,
-                square: 30,
-                address: 'Giữa Hồ Gươm - Hoàn Kiếm - Hà Nội',
-                detailAddress: 'Cạnh vườn hoa Lý Thái Tổ',
-                price: '1.000.000',
-                facilities: [1, 2, 3],
-                favorite: 6,
-                views: 65,
-                checked: false,
-                active: false,
-                fee: '1.000.000'
-            }],
+            rooms: [],
             chosenPost: null,
             totalItems: 10,
             loading: false,
@@ -152,7 +136,7 @@ export default {
               { text: "Yêu thích", value: "favorite" },
               { text: "Trạng thái duyệt", value: "checked" },
               { text: "Phí bài đăng", value: "fee" },
-              { text: "Ngày hết hạn", value: "dueDate" },
+              { text: "Ngày hết hạn", value: "expiredAt" },
               { text: "Trạng thái cho thuê", value: "active"},
               { text: "Chỉnh sửa", value: "edit", sortable: false},
               { text: "Gia hạn bài đăng", value: "prolong", sortable: false},
@@ -180,14 +164,30 @@ export default {
           toggleActivePost: 'room/toggleActivePost'
         }),
 
-        async onToggleActivePost (value) {
-          const data = { active: value }
-          const handler = new ApiHandler().setData(data)
+        onFormatISOdate (date) {
+          return formatISOdate(date)
+        },
+
+        onCheckActivePost (item) {
+          this.chosenPost = item
+          if (!item.active && (!item.images || !item.images.length)) {
+            this.$refs['confirm-dialog'].open()
+          } else {
+            this.onToggleActivePost()
+          }
+        },
+
+        async onToggleActivePost () {
+          const item = this.chosenPost
+          const data = { id: item.id, active: !item.active }
+          const handler = new ApiHandler().setData(data).setOnResponse(() => {
+            this.chosenPost.active = !item.active
+          })
           await this.toggleActivePost(handler)
         },
 
         onClickEditBtn (item) {
-          this.chosenPost = item
+          if (item) this.chosenPost = item
           this.$refs['edit-post-dialog'].open()
         },
 

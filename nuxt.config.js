@@ -45,6 +45,10 @@ export default {
     '@nuxtjs/axios'
   ],
 
+  router: {
+    middleware: ['authMiddleware']
+  },
+
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
     customVariables: ['~/assets/scss/variables.scss'],

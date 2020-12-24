@@ -1,7 +1,12 @@
-<template />
-
 <script>
 export default {
-    layout: 'app'
+    middleware ({ redirect, store }) {
+      if (!store.getters['user/loggedIn']) {
+        redirect('/')
+      } else {
+        const user = store.getters['user/user']
+        redirect('/app/post-list')
+      }
+    }
 }
 </script>

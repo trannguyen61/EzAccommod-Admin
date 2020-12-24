@@ -13,8 +13,14 @@
         :loading="loading"
         multi-sort
       >
+        <template #item.address="{ item }">
+          {{ getFullAddress(item) }}
+        </template>
+        <template #item.expiredAt="{ item }">
+          {{ getFormattedDate(item) }}
+        </template>
         <template #item.type="{ item }">
-          {{ defaultRoom.roomTypes.find(e => e.value == item.type).name || '' }}
+          {{ defaultRoom.roomTypes.find(e => e.id == item.type).name || '' }}
         </template>
         <template #item.check="{ item }">
           <button
@@ -57,7 +63,8 @@
 </template>
 
 <script>
-import { ROOM_TYPES } from '@/consts/consts'
+import { ROOM_TYPES, CITIES, HANOI_DISTRICTS, HANOI_WARDS } from '@/consts/consts'
+import { formatISOdate } from '@/helpers/dateHelper'
 import ApiHandler from '@/helpers/ApiHandler'
 import { mapActions } from 'vuex'
 
@@ -66,62 +73,28 @@ export default {
 
     data () {
         return {
-            rooms: [{
-                id: '123',
-                type: 1,
-                roomNum: 2,
-                square: 30,
-                address: 'Giữa Hồ Gươm - Hoàn Kiếm - Hà Nội',
-                detailAddress: 'Cạnh vườn hoa Lý Thái Tổ',
-                price: '1.000.000',
-                facilities: [1, 2, 3],
-                favorite: 10,
-                views: 100,
-                checked: true,
-                active: false,
-                dueDate: '06/01/2021',
-                fee: '1.500.000',
-                owner: {
-                    id: '1'
-                },
-                duration: '2m'
-            }, {
-                id: '124',
-                type: 3,
-                roomNum: 2,
-                square: 30,
-                address: 'Giữa Hồ Gươm - Hoàn Kiếm - Hà Nội',
-                detailAddress: 'Cạnh vườn hoa Lý Thái Tổ',
-                price: '1.000.000',
-                facilities: [1, 2, 3],
-                favorite: 6,
-                views: 65,
-                checked: false,
-                active: false,
-                fee: '1.000.000',
-                owner: {
-                    id: '1'
-                },
-                duration: '2m'
-            }],
+            rooms: [],
             totalItems: 10,
             loading: false,
             headers: [
-              { text: "ID phòng", value: "id", sortable: false},
-              { text: "ID chủ", value: "owner.id", sortable: false},
-              { text: "Loại phòng", value: "type"},
-              { text: "Số phòng", value: "roomNum"},
-              { text: "Diện tích", value: "square"},
-              { text: "Địa chỉ", value: "address", sortable: false},
-              { text: "Giá", value: "price"},
-              { text: "Thời gian đăng", value: "duration"},
-              { text: "Phí bài đăng", value: "fee"},
               { text: "Duyệt", value: "check", sortable: false},
-              { text: "Xem bài đăng", value: "detail", sortable: false},
+              { text: "Phí bài đăng", value: "fee", width: '10%'},
+              { text: "Loại phòng", value: "type"},
+              { text: "Số phòng", value: "rooms[0].number"},
+              { text: "Diện tích", value: "rooms[0].area"},
+              { text: "Địa chỉ", value: "address", sortable: false, width: '15%'},
+              { text: "Giá", value: "rooms[0].price"},
+              { text: "Hạn đăng", value: "expiredAt"},
+              { text: "ID phòng", value: "_id", sortable: false},
+              { text: "ID chủ", value: "author._id", sortable: false},
+              { text: "Xem bài đăng", value: "detail", sortable: false, width: '10%'},
             ],
             options: {},
             defaultRoom: {
-                roomTypes: ROOM_TYPES
+                roomTypes: ROOM_TYPES,
+                cities: CITIES,
+                hanoiDistricts: HANOI_DISTRICTS,
+                hanoiWards: HANOI_WARDS
             }
         }
     },
@@ -140,6 +113,23 @@ export default {
           getPosts: "room/getPosts",
           approvePost: 'managing/approvePost'
         }),
+
+        getFullAddress (item) {
+          const findCity = this.defaultRoom.cities.find(e => e.id == item.address.city)
+          const findDistrict = this.defaultRoom.hanoiDistricts.find(e => e.id == item.address.district)
+          const findWard = this.defaultRoom.hanoiWards.find(e => e.id == item.address.ward)
+
+          const city = findCity ? findCity.name : ''
+          const district = findDistrict ? findDistrict.name : ''
+          const ward = findWard ? findWard.name : ''
+          const road = item.address.road
+
+          return `${road}, ${ward}, ${district}, ${city}`
+        },
+
+        getFormattedDate (item) {
+          return formatISOdate(item.expiredAt.split("T")[0])
+        },
 
         async onApprovePost (item) {
           const data = { item }

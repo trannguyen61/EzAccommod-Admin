@@ -13,11 +13,19 @@ export const getters = {
   },
 
   loggedIn(state) {
-    return state.access_token
+    return !!state.access_token
   },
 
   user(state) {
     return state.user
+  },
+
+  isOwner(state) {
+    return state.user && state.user.role == 'owner'
+  },
+
+  userName(state) {
+    return `${state.user.lastName} ${state.user.firstName}`
   }
 }
 
@@ -33,7 +41,13 @@ export const mutations = {
   },
 
   setUser (state, user) {
-    state.user = user
+    if (!user) {
+      localStorage.removeItem('user')
+      state.user = null
+    } else {
+      localStorage.setItem('user', JSON.stringify(user))
+      state.user = user  
+    }
   }
 }
 
@@ -43,7 +57,11 @@ export const actions = {
         const rawData = await this.$userServices.signup(handler.data)
         const response = new ResponseHelper(rawData)
 
-        if (response.isError()) {
+        if (response.isSuccess()) {
+          const { token, user } = response.getData()
+          commit('setAccessToken', token)
+          commit('setUser', user)
+        } else {
           const errorMessage = response.getErrorMessage()
           throw new CustomError("Đăng ký thất bại", errorMessage)
         }
@@ -58,9 +76,9 @@ export const actions = {
         const response = new ResponseHelper(rawData)
 
         if (response.isSuccess()) {
-          const { access_token } = response.getData()
-          commit('setAccessToken', access_token)
-          return access_token
+          const { token, user } = response.getData()
+          commit('setAccessToken', token)
+          commit('setUser', user)
         } else {
           const errorMessage = response.getErrorMessage()
           throw new CustomError("Đăng nhập thất bại", errorMessage)
@@ -108,28 +126,13 @@ export const actions = {
       await handler.setOnRequest(onRequest).execute()
     },
 
-    async changePassword({ commit }, handler) {
-      const onRequest = async () => {
-        const rawData = await this.$userServices.changePassword(handler.data)
-        const response = new ResponseHelper(rawData)
-        
-        if (response.isSuccess()) {
-          notificationHelper.notifySuccess('Thành công', 'Mật khẩu của bạn đã được thay đổi!')
-        } else {
-          const errorMessage = response.getErrorMessage()
-          throw new CustomError("Có lỗi khi thay đổi mật khẩu", errorMessage)
-        }  
-      }
-      await handler.setOnRequest(onRequest).execute()
-    },
-
-    logout ({commit}) {
+    async logout ({commit}) {
       commit('setAccessToken', null)
       commit('setUser', null)
       Vue.notify({
         type: 'success',
         title: 'Đăng xuất thành công',
-    })
-  }
+      })
+    }
 }
 
