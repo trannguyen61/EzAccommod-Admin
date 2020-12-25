@@ -200,21 +200,6 @@ async getPostFee ({ commit }, handler) {
   await handler.setOnRequest(onRequest).execute()
 },
 
-async getPosts ({ commit }, {handler, query}) {
-  const onRequest = async () => {
-      const rawData = await this.$roomServices.getPosts(query)
-      const response = new ResponseHelper(rawData)
-      
-      if (response.isSuccess()) {
-        return response.getData()
-      } else {
-        const errorMessage = response.getErrorMessage()
-        throw new CustomError("Có lỗi khi tải bài", errorMessage)
-      }  
-  }
-  await handler.setOnRequest(onRequest).execute()
-},
-
 async toggleActivePost ({ commit }, handler) {
   const onRequest = async () => {
       const rawData = await this.$roomServices.toggleActivePost(handler.data)
@@ -244,6 +229,21 @@ async prolongTimePost ({ commit }, handler) {
       } else {
         const errorMessage = response.getErrorMessage()
         throw new CustomError("Có lỗi khi chuyển trạng thái bài", errorMessage)
+      }  
+  }
+  await handler.setOnRequest(onRequest).execute()
+},
+
+async getOwnerRooms ({ commit }, handler) {
+  const onRequest = async () => {
+      const rawData = await this.$roomServices.getOwnerRooms(handler.data)
+      const response = new ResponseHelper(rawData)
+      
+      if (response.isSuccess()) {
+        return response.getData()
+      } else {
+        const errorMessage = response.getErrorMessage()
+        throw new CustomError("Có lỗi khi tải bài đăng", errorMessage)
       }  
   }
   await handler.setOnRequest(onRequest).execute()

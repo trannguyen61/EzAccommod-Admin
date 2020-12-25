@@ -4,7 +4,10 @@
     color="secondary"
     :permanent="!$vuetify.breakpoint.smAndDown"
     :temporary="$vuetify.breakpoint.smAndDown"
-    :absolute="$vuetify.breakpoint.smAndDown"
+    :absolute="$vuetify.breakpoint.mdAndDown"
+    :expand-on-hover="$vuetify.breakpoint.mdOnly"
+    mini-variant-width="60px"
+    class="side-navbar"
   >
     <v-list
       dense

@@ -1,0 +1,6 @@
+.side-navbar {
+  z-index: 999 !important;
+  @media #{map-get($display-breakpoints, 'md-only')} {
+    margin-top: 88px;
+  }
+}

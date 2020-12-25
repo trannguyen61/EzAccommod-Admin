@@ -12,6 +12,22 @@ export const mutations = {
 }
 
 export const actions = {
+    async authenticatePost({ commit }, handler) {
+      const onRequest = async () => {
+        const rawData = await this.$managingServices.authenticatePost(handler.data)
+        const response = new ResponseHelper(rawData)
+
+        if (response.isSuccess()) {
+            return response.getData()
+        } else {
+          const errorMessage = response.getErrorMessage()
+          throw new CustomError("Có lỗi khi xác thực bài viết", errorMessage)
+        }  
+      }
+
+      await handler.setOnRequest(onRequest).execute()
+    },
+
     async getAccounts({ commit }, handler) {
       const onRequest = async () => {
         const rawData = await this.$managingServices.getAccounts(handler.data)

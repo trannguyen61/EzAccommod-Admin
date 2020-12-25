@@ -123,12 +123,6 @@ export default {
 
     layout: 'app',
 
-    middleware ({ redirect, store }) {
-      if (!store.getters['user/isOwner']) {
-        redirect('/app')
-      }
-    },
-
     data () {
         return {
             rooms: [],
@@ -170,7 +164,6 @@ export default {
 
     methods: {
         ...mapActions({
-          getPosts: "room/getPosts",
           toggleActivePost: 'room/toggleActivePost',
           getOwnerRooms: 'room/getOwnerRooms'
         }),

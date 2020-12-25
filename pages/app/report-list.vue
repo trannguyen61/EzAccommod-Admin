@@ -99,7 +99,7 @@ export default {
 
     methods: {
         ...mapActions({
-          getReports: "room/getPosts",
+          getReports: "room/getReposts",
           resolveReport: 'managing/resolveReport'
         }),
 

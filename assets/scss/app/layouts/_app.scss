@@ -8,5 +8,9 @@
   main {
     padding: 15px 20px;
     width: 100%;
+
+    @media #{map-get($display-breakpoints, 'md-only')} {
+      margin-left: 60px;
+    }
   }
 }

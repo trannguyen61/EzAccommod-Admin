@@ -26,7 +26,7 @@
           <button
             v-ripple
             type="button"
-            :disabled="item.checked"
+            :disabled="item.authenticate"
             class="custom-btn custom-btn--text custom-btn__densed"
             @click="onApprovePost(item)"
           >
@@ -78,7 +78,7 @@ export default {
             loading: false,
             headers: [
               { text: "Duyệt", value: "check", sortable: false},
-              { text: "Phí bài đăng", value: "fee", width: '10%'},
+              { text: "Phí bài đăng", value: "postPrice", width: '10%'},
               { text: "Loại phòng", value: "type"},
               { text: "Số phòng", value: "rooms[0].number"},
               { text: "Diện tích", value: "rooms[0].area"},
@@ -99,19 +99,23 @@ export default {
         }
     },
 
-      watch: {
+    watch: {
         options: {
             async handler (val, oldVal) {
                 if (Object.keys(oldVal).length) await this.onGetPosts()
             },
             deep: true,
         }
-      },
+    },
+
+    mounted () {
+      this.onGetPosts()
+    },
 
     methods: {
         ...mapActions({
-          getPosts: "room/getPosts",
-          approvePost: 'managing/approvePost'
+          getRoomList: "room/getRoomList",
+          authenticatePost: 'managing/authenticatePost'
         }),
 
         getFullAddress (item) {
@@ -132,9 +136,13 @@ export default {
         },
 
         async onApprovePost (item) {
-          const data = { item }
-          const handler = new ApiHandler().setData(data)
-          await this.approvePost(handler)
+          const data = { post_id: item._id }
+          const handler = new ApiHandler()
+                          .setData(data)
+                          .setOnResponse(() => {
+                            item.authenticate = true
+                          })
+          await this.authenticatePost(handler)
         },
 
         async onGetPosts (getFullPage = false) {
@@ -142,8 +150,8 @@ export default {
           const { sortBy, sortDesc, page, itemsPerPage } = this.options
           const handler = new ApiHandler()
             .setOnResponse((data) => {
-              this.rooms = data.rooms
-              this.totalItems = data.total
+              this.rooms = data.posts
+              this.totalItems = data.posts.length
             })
             .setOnFinally(() => {
               this.customSortAndPaginate(sortBy, sortDesc, page, itemsPerPage)
@@ -154,11 +162,12 @@ export default {
             page,
             size: itemsPerPage,
           }
-          if (getFullPage) {
-            await this.getPosts({ handler })
-          } else {
-            await this.getPosts({ handler, query })
-          }
+          // if (getFullPage) {
+          //   await this.getPosts({ handler })
+          // } else {
+          //   await this.getPosts({ handler, query })
+          // }
+          await this.getRoomList(handler)
         },
 
         customSortAndPaginate(sortBy, sortDesc) {

@@ -7,7 +7,7 @@
     <div class="approve-posts--content">
       <v-data-table
         :headers="headers"
-        :items="rooms"
+        :items="reviews"
         :options.sync="options"
         :server-items-length="totalItems"
         :loading="loading"
