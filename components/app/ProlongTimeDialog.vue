@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { DEFAULT_TIME_FRAME } from '@/consts/consts'
+import { DEFAULT_TIME_FRAME, DEFAULT_POST_PRICE } from '@/consts/consts'
 import { addDays, formatISOdate } from '@/helpers/dateHelper'
 import ApiHandler from '@/helpers/ApiHandler'
 import { mapActions } from 'vuex'
@@ -90,14 +90,15 @@ export default {
             postPrice: null,
             expiredAt: null,
             defaultInfo: {
-              defaultTimeFrame: DEFAULT_TIME_FRAME
+              defaultTimeFrame: DEFAULT_TIME_FRAME,
+              postPrice: DEFAULT_POST_PRICE
             }
         }
     },
 
     computed: {
       formattedExpiredAt () {
-        return this.post && this.post.expiredAt ? formatISOdate(this.post.expiredAt) : ''
+        return this.post && this.post.expiredAt ? formatISOdate(this.post.expiredAt.split('T')[0]) : ''
       },
 
       formattedNewExpiredAt () {
@@ -109,27 +110,34 @@ export default {
       timeFrame () {
           if (!this.post || !this.post.expiredAt) return
 
-          const now = new Date(this.post.expiredAt)
-          const expiredAt = addDays(now, this.timeFrame).toISOString()
+          const expiredAt = new Date(this.post.expiredAt)
+          const newExpiredAt = addDays(expiredAt, this.timeFrame).toISOString()
 
-          this.expiredAt =  expiredAt.split("T")[0]
+          this.expiredAt =  newExpiredAt.split("T")[0]
+      },
+
+      post: {
+        handler () {
+          this.timeFrame = null
+          this.postPrice = null
+          this.expiredAt = null
+        },
+        deep: true
       }
     },
 
     methods: {
         ...mapActions({
-            getPostPrice: 'room/getPostPrice',
             prolongTimePost: 'room/prolongTimePost'
         }),
 
         async onGetPostPrice () {
-            const data = { time: this.timeFrame }
-            const handler = new ApiHandler()
-                            .setData(data)
-                            .setOnResponse(res => {
-                                this.postPrice = res
-                            })
-            await this.getPostPrice(handler)
+            const findPostPrice = this.defaultInfo.postPrice.find(e => e.days == this.timeFrame)
+            if (!findPostPrice) {
+              this.timeFrame = null
+            } else {
+              this.postPrice = findPostPrice.price
+            }
         },
 
         async onProlongTimePost () {

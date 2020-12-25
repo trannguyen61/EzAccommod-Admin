@@ -91,11 +91,6 @@
                 class="stepper-input"
                 @change="onGetPostPrice"
               />
-              <v-progress-linear
-                v-if="getFeeLoading"
-                indeterminate
-                color="primary"
-              />
 
               <div class="d-flex">
                 <v-text-field
@@ -107,7 +102,7 @@
                 />
 
                 <v-text-field
-                  :value="postPrice"
+                  :value="form.postPrice"
                   readonly
                   label="Phí hiển thị bài đăng"
                   class="stepper-input"
@@ -360,7 +355,7 @@
 import UploadFile from '@/components/app/UploadFile'
 import ServicesChosen from '@/components/app/ServicesChosen'
 
-import { HANOI_DISTRICTS, HANOI_WARDS, ROOM_TYPES, DEFAULT_TIME_FRAME, CITIES } from '@/consts/consts'
+import { HANOI_DISTRICTS, HANOI_WARDS, ROOM_TYPES, DEFAULT_TIME_FRAME, CITIES, DEFAULT_POST_PRICE } from '@/consts/consts'
 import ApiHandler from '@/helpers/ApiHandler'
 import { addDays, formatISOdate } from '@/helpers/dateHelper'
 import validationRules from '@/helpers/validationRules'
@@ -379,7 +374,6 @@ export default {
     data () {
         return {
             loading: false,
-            getFeeLoading: false,
             step: 1,
             formValue1: false,
             formValue2: false,
@@ -394,7 +388,8 @@ export default {
                 },
                 expiredAt: null,
                 type: null,
-                rooms: []
+                rooms: [],
+                postPrice: null
             },
             room: {
                 number: null,
@@ -407,13 +402,13 @@ export default {
             postImgs: [],
             previewImgs: [],
             imgsToDelete: [],
-            postPrice: null,
             defaultInfo: {
               hanoiDistricts: HANOI_DISTRICTS,
               hanoiWards: HANOI_WARDS,
               roomTypes: ROOM_TYPES,
               defaultTimeFrame: DEFAULT_TIME_FRAME,
-              cities: CITIES
+              cities: CITIES,
+              postPrice: DEFAULT_POST_PRICE
             }
         }
     },
@@ -438,9 +433,27 @@ export default {
       },
 
       timeFrame () {
-          const now = new Date()
-          const expiredAt = addDays(now, this.timeFrame).toISOString()
+          let createdAt = null
+          if (this.hasExistedPost) {
+            createdAt = new Date(this.post.createdAt)
+          } else {
+            createdAt = new Date()
+          }
+          const expiredAt = addDays(createdAt, this.timeFrame).toISOString()
           this.expiredAt = formatISOdate(expiredAt.split("T")[0])
+      },
+      
+      post: {
+        handler () {
+          this.timeFrame = null
+          this.expiredAt = null
+          this.postImgs = []
+          this.previewImgs = []
+          this.imgsToDelete = []
+
+          this.getChosenPost()
+        },
+        deep: true
       }
     },
 
@@ -450,7 +463,6 @@ export default {
 
     methods: {
         ...mapActions({
-            getPostPrice: 'room/getPostPrice',
             submitPost: 'room/submitPost',
             uploadImage: 'room/uploadImage'
         }),
@@ -459,7 +471,7 @@ export default {
             if (!this.hasExistedPost) return
 
             const vm = this
-            
+
             Object.keys(this.post).forEach(e => {
                 vm.form[e] = vm.post[e]
 
@@ -467,20 +479,18 @@ export default {
                   vm.room = vm.post.rooms[0]
                 }
             })
+            this.$nextTick(() => {
+              this.expiredAt = formatISOdate(this.post.expiredAt.split("T")[0])
+            })
         },
 
         async onGetPostPrice () {
-            this.getFeeLoading = true
-            const data = { time: this.timeFrame }
-            const handler = new ApiHandler()
-                            .setData(data)
-                            .setOnResponse(res => {
-                                this.postPrice = res
-                            })
-                            .setOnFinally(() => {
-                              this.getFeeLoading = false
-                            })
-            await this.getPostPrice(handler)
+            const findPostPrice = this.defaultInfo.postPrice.find(e => e.days == this.timeFrame)
+            if (!findPostPrice) {
+              this.timeFrame = null
+            } else {
+              this.form.postPrice = findPostPrice.price
+            }
         },
 
         onAddRoom (room) {
@@ -531,8 +541,13 @@ export default {
           this.form.rooms = [this.room]
           const data = this.form
           
-          const now = new Date()
-          const expiredAt = addDays(now, this.timeFrame).toISOString()
+          let createdAt = null
+          if (this.hasExistedPost) {
+            createdAt = new Date(this.post.createdAt)
+          } else {
+            createdAt = new Date()
+          }
+          const expiredAt = addDays(createdAt, this.timeFrame).toISOString()
           data.expiredAt = expiredAt.split("T")[0]
 
           return data
@@ -557,7 +572,6 @@ export default {
           this.postImgs = [],
           this.previewImgs = [],
           this.imgsToDelete = [],
-          this.postPrice = null
           this.step = 1
         }
     }

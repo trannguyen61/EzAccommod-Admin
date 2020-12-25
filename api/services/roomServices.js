@@ -46,10 +46,6 @@ export default $axios => ({
         // return $axios.get(API_GET_ROOM_LIST)
     },
 
-    getPostPrice () {
-        // return $axios.get(API_GET_ROOM_LIST)
-    },
-
     toggleActivePost () {
         // return $axios.get(API_GET_ROOM_LIST)
     },

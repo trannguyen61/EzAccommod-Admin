@@ -185,21 +185,6 @@ async editPost ({ commit }, handler) {
   await handler.setOnRequest(onRequest).execute()
 },
 
-async getPostPrice ({ commit }, handler) {
-  const onRequest = async () => {
-      const rawData = await this.$roomServices.getPostPrice(handler.data)
-      const response = new ResponseHelper(rawData)
-      
-      if (response.isSuccess()) {
-        return response.getData()
-      } else {
-        const errorMessage = response.getErrorMessage()
-        throw new CustomError("Có lỗi khi tải phí hiển thị bài", errorMessage)
-      }  
-  }
-  await handler.setOnRequest(onRequest).execute()
-},
-
 async toggleActivePost ({ commit }, handler) {
   const onRequest = async () => {
       const rawData = await this.$roomServices.toggleActivePost(handler.data)

@@ -180,3 +180,13 @@ export const DEFAULT_TIME_FRAME = [
     { id: 1, name: '6 tháng', days: 180 },
     { id: 1, name: '1 năm', days: 365 },
 ]
+
+export const DEFAULT_POST_PRICE = [
+    { priceValue: 50, price: '50.000', days: 7, multiples: 1000, currency: 'VNĐ' },
+    { priceValue: 100, price: '100.000', days: 14, multiples: 1000, currency: 'VNĐ' },
+    { priceValue: 300, price: '300.000', days: 30, multiples: 1000, currency: 'VNĐ' },
+    { priceValue: 500, price: '500.000', days: 60, multiples: 1000, currency: 'VNĐ' },
+    { priceValue: 800, price: '800.000', days: 90, multiples: 1000, currency: 'VNĐ' },
+    { priceValue: 1000, price: '1.000.000', days: 180, multiples: 1000, currency: 'VNĐ' },
+    { priceValue: 1500, price: '1.500.000', days: 365, multiples: 1000, currency: 'VNĐ' },
+]
