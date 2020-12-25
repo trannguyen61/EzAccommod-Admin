@@ -135,7 +135,7 @@ export default {
               { text: "Lượt xem", value: "views" },
               { text: "Yêu thích", value: "like" },
               { text: "Trạng thái duyệt", value: "checked" },
-              { text: "Phí bài đăng", value: "fee" },
+              { text: "Phí bài đăng", value: "postPrice" },
               { text: "Ngày hết hạn", value: "expiredAt" },
               { text: "Trạng thái cho thuê", value: "active"},
               { text: "Chỉnh sửa", value: "edit", sortable: false},

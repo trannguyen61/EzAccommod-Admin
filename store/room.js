@@ -185,9 +185,9 @@ async editPost ({ commit }, handler) {
   await handler.setOnRequest(onRequest).execute()
 },
 
-async getPostFee ({ commit }, handler) {
+async getPostPrice ({ commit }, handler) {
   const onRequest = async () => {
-      const rawData = await this.$roomServices.getPostFee(handler.data)
+      const rawData = await this.$roomServices.getPostPrice(handler.data)
       const response = new ResponseHelper(rawData)
       
       if (response.isSuccess()) {

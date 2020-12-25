@@ -89,7 +89,7 @@
                 hint="Trường bắt buộc"
                 persistent-hint
                 class="stepper-input"
-                @change="onGetPostFee"
+                @change="onGetPostPrice"
               />
               <v-progress-linear
                 v-if="getFeeLoading"
@@ -107,7 +107,7 @@
                 />
 
                 <v-text-field
-                  :value="postFee"
+                  :value="postPrice"
                   readonly
                   label="Phí hiển thị bài đăng"
                   class="stepper-input"
@@ -407,7 +407,7 @@ export default {
             postImgs: [],
             previewImgs: [],
             imgsToDelete: [],
-            postFee: null,
+            postPrice: null,
             defaultInfo: {
               hanoiDistricts: HANOI_DISTRICTS,
               hanoiWards: HANOI_WARDS,
@@ -450,7 +450,7 @@ export default {
 
     methods: {
         ...mapActions({
-            getPostFee: 'room/getPostFee',
+            getPostPrice: 'room/getPostPrice',
             submitPost: 'room/submitPost',
             uploadImage: 'room/uploadImage'
         }),
@@ -469,18 +469,18 @@ export default {
             })
         },
 
-        async onGetPostFee () {
+        async onGetPostPrice () {
             this.getFeeLoading = true
             const data = { time: this.timeFrame }
             const handler = new ApiHandler()
                             .setData(data)
                             .setOnResponse(res => {
-                                this.postFee = res
+                                this.postPrice = res
                             })
                             .setOnFinally(() => {
                               this.getFeeLoading = false
                             })
-            await this.getPostFee(handler)
+            await this.getPostPrice(handler)
         },
 
         onAddRoom (room) {
@@ -557,7 +557,7 @@ export default {
           this.postImgs = [],
           this.previewImgs = [],
           this.imgsToDelete = [],
-          this.postFee = null
+          this.postPrice = null
           this.step = 1
         }
     }

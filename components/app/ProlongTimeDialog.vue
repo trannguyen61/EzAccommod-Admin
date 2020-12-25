@@ -22,7 +22,7 @@
               label="Thời gian hiển thị bài đăng"
               placeholder="6 tháng"
               class="mx-8"
-              @change="onGetPostFee"
+              @change="onGetPostPrice"
             />
           </v-col>
           <v-col
@@ -39,7 +39,7 @@
         </v-row>
 
         <v-text-field
-          :value="postFee"
+          :value="postPrice"
           readonly
           label="Phí hiển thị bài đăng (bổ sung)"
           class="mx-8"
@@ -58,7 +58,7 @@
         </button>
         <button
           v-ripple
-          :disabled="!timeFrame || !postFee"
+          :disabled="!timeFrame || !postPrice"
           class="custom-btn custom-btn--text custom-btn__densed"
           @click="onProlongTimePost"
         >
@@ -87,7 +87,7 @@ export default {
         return {
             dialog: false,
             timeFrame: null,
-            postFee: null,
+            postPrice: null,
             expiredAt: null,
             defaultInfo: {
               defaultTimeFrame: DEFAULT_TIME_FRAME
@@ -118,25 +118,25 @@ export default {
 
     methods: {
         ...mapActions({
-            getPostFee: 'room/getPostFee',
+            getPostPrice: 'room/getPostPrice',
             prolongTimePost: 'room/prolongTimePost'
         }),
 
-        async onGetPostFee () {
+        async onGetPostPrice () {
             const data = { time: this.timeFrame }
             const handler = new ApiHandler()
                             .setData(data)
                             .setOnResponse(res => {
-                                this.postFee = res
+                                this.postPrice = res
                             })
-            await this.getPostFee(handler)
+            await this.getPostPrice(handler)
         },
 
         async onProlongTimePost () {
             const data = { time: this.timeFrame }
             const handler = new ApiHandler()
                             .setData(data)
-            await this.getPostFee(handler)
+            await this.getPostPrice(handler)
         },
 
         open () {
