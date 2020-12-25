@@ -74,6 +74,18 @@
         </v-list-item>
       </nuxt-link>
 
+      <nuxt-link to="/app/approve-reviews">
+        <v-list-item class="my-2">
+          <v-list-item-icon>
+            <v-icon>fas fa-star</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Duyệt bình luận</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </nuxt-link>
+
       <nuxt-link to="/app/report-list">
         <v-list-item class="my-2">
           <v-list-item-icon>

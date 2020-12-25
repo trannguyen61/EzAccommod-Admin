@@ -32,7 +32,7 @@
           </v-icon>
         </template>
         <template #item.expiredAt="{ item }">
-          {{ onFormatISOdate(item.expiredAt) }}
+          {{ onFormatISOdate(item.expiredAt.split("T")[0]) }}
         </template>
         <template #item.active="{ item }">
           <v-switch
@@ -123,6 +123,12 @@ export default {
 
     layout: 'app',
 
+    middleware ({ redirect, store }) {
+      if (!store.getters['user/isOwner']) {
+        redirect('/app')
+      }
+    },
+
     data () {
         return {
             rooms: [],
@@ -130,10 +136,10 @@ export default {
             totalItems: 10,
             loading: false,
             headers: [
-              { text: "ID phòng", value: "id" },
+              { text: "ID phòng", value: "_id" },
               { text: "Loại phòng", value: "type", width: "10%" },
               { text: "Lượt xem", value: "views" },
-              { text: "Yêu thích", value: "favorite" },
+              { text: "Yêu thích", value: "like" },
               { text: "Trạng thái duyệt", value: "checked" },
               { text: "Phí bài đăng", value: "fee" },
               { text: "Ngày hết hạn", value: "expiredAt" },
@@ -149,19 +155,24 @@ export default {
         }
     },
 
-      watch: {
+    watch: {
       options: {
         async handler (val, oldVal) {
           if (Object.keys(oldVal).length) await this.onGetPosts()
         },
         deep: true,
       }
-      },
+    },
+
+    mounted () {
+      this.onGetPosts()
+    },
 
     methods: {
         ...mapActions({
           getPosts: "room/getPosts",
-          toggleActivePost: 'room/toggleActivePost'
+          toggleActivePost: 'room/toggleActivePost',
+          getOwnerRooms: 'room/getOwnerRooms'
         }),
 
         onFormatISOdate (date) {
@@ -201,8 +212,8 @@ export default {
           const { sortBy, sortDesc, page, itemsPerPage } = this.options
           const handler = new ApiHandler()
             .setOnResponse((data) => {
-              this.rooms = data.rooms
-              this.totalItems = data.total
+              this.rooms = data.posts
+              this.totalItems = data.posts.length
             })
             .setOnFinally(() => {
               this.customSortAndPaginate(sortBy, sortDesc, page, itemsPerPage)
@@ -213,11 +224,12 @@ export default {
             page,
             size: itemsPerPage,
           }
-          if (getFullPage) {
-            await this.getPosts({ handler })
-          } else {
-            await this.getPosts({ handler, query })
-          }
+          // if (getFullPage) {
+          //   await this.getOwnerRooms({ handler })
+          // } else {
+          //   await this.getOwnerRooms({ handler, query })
+          // }
+          await this.getOwnerRooms(handler)
         },
 
         customSortAndPaginate(sortBy, sortDesc) {

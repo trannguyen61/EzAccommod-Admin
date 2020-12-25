@@ -5,7 +5,7 @@ import {
     API_CREATE_REVIEW,
     API_CREATE_REPORT,
     API_FAVORITE_ROOM,
-    IMAGE_UPLOAD_URL
+    API_GET_OWNER_ROOMS
 } from '@/api/apiUrl'
 const axios = require('axios')
 
@@ -68,21 +68,7 @@ export default $axios => ({
         // return $axios.get(API_GET_ROOM_LIST)
     },
 
-    uploadImage (payload) {
-        axios({
-            baseURL: IMAGE_UPLOAD_URL,
-            headers: {
-                'Authorization': 'Client-ID 546c25a59c58ad7',
-                'Content-Type': 'multipart/form-data',
-                'Access-Control-Allow-Origin': '*'
-            },
-            method: 'post',
-            data: payload
-        }).then(res => {
-            console.log(res)
-        }).catch(err => {
-            console.log(err)
-        })
-
+    getOwnerRooms () {
+        return $axios.post(API_GET_OWNER_ROOMS)
     }
 })
