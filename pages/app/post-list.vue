@@ -183,7 +183,7 @@ export default {
 
         async onToggleActivePost () {
           const item = this.chosenPost
-          const data = { id: item.id, active: !item.active }
+          const data = { post_id: item.id }
           const handler = new ApiHandler().setData(data).setOnResponse(() => {
             this.chosenPost.active = !item.active
           })

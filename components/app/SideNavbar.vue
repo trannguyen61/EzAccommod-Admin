@@ -19,7 +19,7 @@
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title class="text-uppercase">
-            Nakayama Haruki
+            {{ userName }}
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
@@ -105,11 +105,19 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     data () {
         return {
             drawer: false
         }
+    },
+
+    computed: {
+      ...mapGetters({
+        userName: 'user/userName'
+      })
     }
 }
 </script>

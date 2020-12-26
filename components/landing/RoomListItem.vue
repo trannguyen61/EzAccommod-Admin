@@ -43,24 +43,6 @@
           </li>
         </ul>
       </div>
-      <v-btn
-        icon
-        class="favorite"
-        @click="onFavoriteRoom"
-      >
-        <v-icon
-          v-if="!room.favorite"
-          color="primary"
-        >
-          far fa-heart
-        </v-icon>
-        <v-icon
-          v-else
-          color="primary"
-        >
-          fas fa-heart
-        </v-icon>
-      </v-btn>
     </div>
   </div>
 </template>
@@ -85,18 +67,6 @@ export default {
                 roomFacilities: ROOM_FACILITIES
             }
         }
-    },
-
-    methods: {
-      ...mapActions({
-        favoriteRoom: 'room/favoriteRoom'
-      }),
-
-      async onFavoriteRoom () {
-        const data = {}
-        const handler = new ApiHandler().setData(data)
-        await this.favoriteRoom(handler)
-      }
     }
 }
 </script>

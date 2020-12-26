@@ -25,7 +25,7 @@ export const getters = {
   },
 
   userName(state) {
-    return `${state.user.lastName} ${state.user.firstName}`
+    return state.user ? `${state.user.lastName} ${state.user.firstName}` : null
   }
 }
 

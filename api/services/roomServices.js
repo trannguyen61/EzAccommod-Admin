@@ -4,9 +4,9 @@ import {
     API_CREATE_POST,
     API_CREATE_REVIEW,
     API_CREATE_REPORT,
-    API_FAVORITE_ROOM,
     API_GET_OWNER_ROOMS,
-    API_PROLONG_TIME_POST
+    API_PROLONG_TIME_POST,
+    API_TOGGLE_ACTIVE
 } from '@/api/apiUrl'
 
 export default $axios => ({
@@ -16,10 +16,6 @@ export default $axios => ({
 
     filterRooms (payload) {
         // return $axios.get(API_GET_ROOM_LIST)
-    },
-
-    favoriteRoom ({ post_id }) {
-        return $axios.get(`${API_ROOM_SERVICE}/${post_id}${API_FAVORITE_ROOM}`)
     },
 
     reportRoom ({ post_id, data }) {
@@ -46,8 +42,8 @@ export default $axios => ({
         // return $axios.get(API_GET_ROOM_LIST)
     },
 
-    toggleActivePost () {
-        // return $axios.get(API_GET_ROOM_LIST)
+    toggleActivePost ({ post_id }) {
+        return $axios.put(`${API_ROOM_SERVICE}/${post_id}${API_TOGGLE_ACTIVE}`)
     },
 
     prolongTimePost ({ post_id, data }) {

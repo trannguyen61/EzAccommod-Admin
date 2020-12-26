@@ -49,21 +49,6 @@ export const actions = {
         await handler.setOnRequest(onRequest).execute()
     },
 
-    async favoriteRoom ({ commit }, handler) {
-        const onRequest = async () => {
-            const rawData = await this.$roomServices.favoriteRoom(handler.data)
-            const response = new ResponseHelper(rawData)
-            
-            if (response.isSuccess()) {
-              return response.getData()
-            } else {
-              const errorMessage = response.getErrorMessage()
-              throw new CustomError("Có lỗi khi yêu thích phòng", errorMessage)
-            }  
-        }
-        await handler.setOnRequest(onRequest).execute()
-    },
-
     async reportRoom ({ commit }, handler) {
         const onRequest = async () => {
             const rawData = await this.$roomServices.reportRoom(handler.data)
@@ -131,21 +116,6 @@ export const actions = {
         }
         await handler.setOnRequest(onRequest).execute()
     },
-
-    async getFavoriteRooms ({ commit }, handler) {
-      const onRequest = async () => {
-          const rawData = await this.$roomServices.getFavoriteRooms(handler.data)
-          const response = new ResponseHelper(rawData)
-          
-          if (response.isSuccess()) {
-              return response.getData()
-          } else {
-            const errorMessage = response.getErrorMessage()
-            throw new CustomError("Có lỗi khi tải phòng", errorMessage)
-          }  
-      }
-      await handler.setOnRequest(onRequest).execute()
-  },
 
   async submitPost ({ commit }, handler) {
     const onRequest = async () => {

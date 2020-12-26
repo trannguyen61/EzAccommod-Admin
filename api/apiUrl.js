@@ -20,9 +20,9 @@ export const API_GET_ROOM_LIST = API_ROOM_SERVICE
 export const API_CREATE_POST = API_ROOM_SERVICE + '/new-post'
 export const API_CREATE_REVIEW = '/new-review'
 export const API_CREATE_REPORT = '/reportRoom'
-export const API_FAVORITE_ROOM = '/add-favorite'
 export const API_GET_OWNER_ROOMS = API_ROOM_SERVICE + '/get-user-post'
 export const API_PROLONG_TIME_POST = '/prolong-time-post'
+export const API_TOGGLE_ACTIVE = '/toggle-active-post'
 
 /*
 * MANAGING SERVICES
