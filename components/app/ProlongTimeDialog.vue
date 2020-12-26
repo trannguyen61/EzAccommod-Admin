@@ -58,11 +58,16 @@
         </button>
         <button
           v-ripple
-          :disabled="!timeFrame || !postPrice"
+          :disabled="!timeFrame || !postPrice || loading"
           class="custom-btn custom-btn--text custom-btn__densed"
           @click="onProlongTimePost"
         >
-          Gia hạn
+          {{ !loading ? 'Gia hạn' : '' }}
+          <v-progress-circular
+            v-if="loading"
+            indeterminate
+            color="primary"
+          />
         </button>
       </v-card-actions>
     </v-card>
@@ -86,6 +91,7 @@ export default {
     data () {
         return {
             dialog: false,
+            loading: false,
             timeFrame: null,
             postPrice: null,
             expiredAt: null,
@@ -131,7 +137,7 @@ export default {
             prolongTimePost: 'room/prolongTimePost'
         }),
 
-        async onGetPostPrice () {
+        onGetPostPrice () {
             const findPostPrice = this.defaultInfo.postPrice.find(e => e.days == this.timeFrame)
             if (!findPostPrice) {
               this.timeFrame = null
@@ -141,10 +147,24 @@ export default {
         },
 
         async onProlongTimePost () {
-            const data = { time: this.timeFrame }
+            this.loading = true
+            const postPrice = this.postPrice + this.post.postPrice ? this.post.postPrice : 0
+            const data = {  
+              post_id: this.post._id,
+              data: {
+                expiredAt: this.expiredAt,
+                postPrice
+              }
+            }
             const handler = new ApiHandler()
                             .setData(data)
-            await this.getPostPrice(handler)
+                            .setOnResponse(() => {
+                              this.close()
+                            })
+                            .setOnFinally(() => {
+                              this.loading = false
+                            })
+            await this.prolongTimePost(handler)
         },
 
         open () {

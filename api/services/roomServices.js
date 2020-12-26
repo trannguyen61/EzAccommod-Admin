@@ -6,8 +6,8 @@ import {
     API_CREATE_REPORT,
     API_FAVORITE_ROOM,
     API_GET_OWNER_ROOMS,
+    API_PROLONG_TIME_POST
 } from '@/api/apiUrl'
-const axios = require('axios')
 
 export default $axios => ({
     getRoomList () {
@@ -50,8 +50,8 @@ export default $axios => ({
         // return $axios.get(API_GET_ROOM_LIST)
     },
 
-    prolongTimePost () {
-        // return $axios.get(API_GET_ROOM_LIST)
+    prolongTimePost ({ post_id, data }) {
+        return $axios.put(`${API_ROOM_SERVICE}/${post_id}${API_PROLONG_TIME_POST}`, data)
     },
 
     getOwnerRooms () {

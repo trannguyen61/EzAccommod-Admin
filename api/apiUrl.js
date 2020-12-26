@@ -22,4 +22,9 @@ export const API_CREATE_REVIEW = '/new-review'
 export const API_CREATE_REPORT = '/reportRoom'
 export const API_FAVORITE_ROOM = '/add-favorite'
 export const API_GET_OWNER_ROOMS = API_ROOM_SERVICE + '/get-user-post'
+export const API_PROLONG_TIME_POST = '/prolong-time-post'
+
+/*
+* MANAGING SERVICES
+*/
 export const API_AUTHENTICATE_POST = '/authenticate-post'
