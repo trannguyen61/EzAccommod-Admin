@@ -22,6 +22,9 @@
         <template #item.type="{ item }">
           {{ defaultRoom.roomTypes.find(e => e.id == item.type).name || '' }}
         </template>
+        <template #item.price="{ item }">
+          {{ new Intl.NumberFormat('vi-VN').format(item.rooms[0].price.replace(/\D/g, '')) }}
+        </template>
         <template #item.check="{ item }">
           <button
             v-ripple
@@ -83,7 +86,7 @@ export default {
               { text: "Số phòng", value: "rooms[0].number"},
               { text: "Diện tích", value: "rooms[0].area"},
               { text: "Địa chỉ", value: "address", sortable: false, width: '15%'},
-              { text: "Giá", value: "rooms[0].price"},
+              { text: "Giá", value: "price"},
               { text: "Hạn đăng", value: "expiredAt"},
               { text: "ID phòng", value: "_id", sortable: false},
               { text: "ID chủ", value: "author._id", sortable: false},

@@ -25,7 +25,7 @@
           {{ room.square }} m<sup>2</sup> - {{ room.roomNum }} phòng
         </div>
         <div class="price">
-          {{ room.price }} đồng/tháng
+          {{ new Intl.NumberFormat('vi-VN').format(room.price.replace(/\D/g, '')) }} đồng/tháng
         </div>
       </div>
       <v-divider class="my-3" />

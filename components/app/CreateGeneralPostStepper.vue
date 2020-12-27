@@ -538,7 +538,9 @@ export default {
         },
 
         onTransformData () {
-          this.form.rooms = [this.room]
+          const room = Object.assign({}, this.room)
+          room.price = room.price.replaceAll('.', '')
+          this.form.rooms = [room]
           const data = this.form
           
           let createdAt = null

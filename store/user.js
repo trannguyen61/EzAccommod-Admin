@@ -20,8 +20,8 @@ export const getters = {
     return state.user
   },
 
-  isOwner(state) {
-    return state.user && state.user.role == 'owner'
+  isAdmin(state) {
+    return state.user && state.user.role == 'admin'
   },
 
   userName(state) {
@@ -77,6 +77,11 @@ export const actions = {
 
         if (response.isSuccess()) {
           const { token, user } = response.getData()
+
+          if (user.role != 'admin') {
+            throw new CustomError("Đăng nhập thất bại", 'Vui lòng đăng nhập tài khoản quản trị để tiếp tục.')
+          }
+
           commit('setAccessToken', token)
           commit('setUser', user)
         } else {
