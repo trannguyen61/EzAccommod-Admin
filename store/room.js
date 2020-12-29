@@ -136,6 +136,19 @@ export const actions = {
     await handler.setOnRequest(onRequest).execute()
 },
 
+async editRoom ({ commit }, handler) {
+  const onRequest = async () => {
+      const rawData = await this.$roomServices.editRoom(handler.data)
+      const response = new ResponseHelper(rawData)
+      
+      if (response.isError()) {
+        const errorMessage = response.getErrorMessage()
+        throw new CustomError("Có lỗi khi gửi yêu cầu xét duyệt bài đăng", errorMessage)
+      }
+  }
+  await handler.setOnRequest(onRequest).execute()
+},
+
 async editPost ({ commit }, handler) {
   const onRequest = async () => {
       const rawData = await this.$roomServices.editPost(handler.data)

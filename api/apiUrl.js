@@ -23,6 +23,8 @@ export const API_CREATE_REPORT = '/reportRoom'
 export const API_GET_OWNER_ROOMS = API_ROOM_SERVICE + '/get-user-post'
 export const API_PROLONG_TIME_POST = '/prolong-time-post'
 export const API_TOGGLE_ACTIVE = '/toggle-active-post'
+export const API_EDIT_ROOM = '/edit-room'
+export const API_EDIT_POST = '/edit-post'
 
 /*
 * MANAGING SERVICES

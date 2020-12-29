@@ -19,7 +19,7 @@
         </template>
         <template #item.checked="{ item }">
           <v-icon
-            v-if="item.checked"
+            v-if="item.authenticate"
             color="success"
           >
             fas fa-circle
@@ -36,6 +36,7 @@
         </template>
         <template #item.active="{ item }">
           <v-switch
+            inset
             :readonly="!item.checked"
             :input-value="item.active"
             @mousedown="onCheckActivePost(item)"
@@ -56,7 +57,7 @@
           <button
             v-ripple
             type="button"
-            :disabled="!item.checked"
+            :disabled="!item.authenticate"
             class="custom-btn custom-btn--text custom-btn__densed"
             @click="onClickProlongTimeBtn(item)"
           >
@@ -65,7 +66,7 @@
         </template>
         <template #item.detail="{ item }">
           <button
-            v-if="item.checked"
+            v-if="item.authenticate"
             v-ripple
             type="button"
             class="custom-btn custom-btn--text"
@@ -97,6 +98,7 @@
     <edit-post-dialog
       ref="edit-post-dialog"
       :post="chosenPost"
+      @editted="onGetPosts"
     />
     <confirm-dialog
       ref="confirm-dialog"
@@ -133,7 +135,7 @@ export default {
               { text: "ID phòng", value: "_id" },
               { text: "Loại phòng", value: "type", width: "10%" },
               { text: "Lượt xem", value: "views" },
-              { text: "Yêu thích", value: "like" },
+              { text: "Yêu thích", value: "saved" },
               { text: "Trạng thái duyệt", value: "checked" },
               { text: "Phí bài đăng", value: "postPrice" },
               { text: "Ngày hết hạn", value: "expiredAt" },
