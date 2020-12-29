@@ -132,5 +132,41 @@ export const actions = {
 
     await handler.setOnRequest(onRequest).execute()
   },
+
+  async getReviews({ commit }, handler) {
+    const onRequest = async () => {
+      const rawData = await this.$managingServices.getReviews(handler.data)
+      const response = new ResponseHelper(rawData)
+
+      if (response.isSuccess()) {
+          return response.getData()
+      } else {
+        const errorMessage = response.getErrorMessage()
+        throw new CustomError("Có lỗi khi tải bình luận", errorMessage)
+      }  
+    }
+
+    await handler.setOnRequest(onRequest).execute()
+  },
+
+  async authenticateReview({ commit }, handler) {
+    const onRequest = async () => {
+      const rawData = await this.$managingServices.authenticateReview(handler.data)
+      const response = new ResponseHelper(rawData)
+
+      if (response.isSuccess()) {
+        Vue.notify({
+          type: 'success',
+          title: 'Duyệt bình luận thành công',
+        })
+      } else {
+        const errorMessage = response.getErrorMessage()
+        throw new CustomError("Có lỗi khi duyệt bình luận", errorMessage)
+      }  
+    }
+
+    await handler.setOnRequest(onRequest).execute()
+  },
+
 }
 

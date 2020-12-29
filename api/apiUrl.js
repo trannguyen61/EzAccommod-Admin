@@ -3,7 +3,7 @@
 */
 export const BASE_URL = 'https://easy-accomod-api.herokuapp.com/api'
 export const IMAGE_UPLOAD_URL = 'https://api.imgur.com/3/upload'
-export const API_ADMIN = 'admin'
+export const API_ADMIN = '/admin'
 
 /*
 *   USER SERVICES
@@ -30,3 +30,5 @@ export const API_EDIT_POST = '/edit-post'
 * MANAGING SERVICES
 */
 export const API_AUTHENTICATE_POST = '/authenticate-post'
+export const API_GET_REVIEWS = API_ADMIN + '/review'
+export const API_AUTHENTICATE_REVIEW = '/authenticate-review'

@@ -15,9 +15,9 @@
       >
         <template #item.check="{ item }">
           <button
+            v-if="!item.authenticate"
             v-ripple
             type="button"
-            :disabled="item.checked"
             class="custom-btn custom-btn--text custom-btn__densed"
             @click="onApproveReview(item)"
           >
@@ -31,7 +31,7 @@
             type="button"
             class="custom-btn custom-btn--text"
           >
-            <a :href="`http://localhost:3000/${item.id}`">
+            <a :href="`http://localhost:3000/${item.belongTo._id}`">
               Chi tiết
               <v-icon class="ml-2">
                 fas fa-chevron-right
@@ -69,11 +69,10 @@ export default {
             loading: false,
             headers: [
               { text: "Duyệt", value: "check", sortable: false},
-              { text: "Tiêu đề", value: "title", width: '10%'},
+              { text: "Tiêu đề", value: "title", width: '15%'},
               { text: "Đánh giá", value: "star"},
-              { text: "Nội dung", value: "content", width: '30%'},
-              { text: "ID phòng", value: "_id", sortable: false},
-              { text: "ID chủ bình luận", value: "author._id", sortable: false},
+              { text: "Nội dung", value: "content", width: '40%'},
+              { text: "ID phòng", value: "belongTo._id", sortable: false},
               { text: "Xem bài đăng", value: "detail", sortable: false, width: '10%'},
             ],
             options: {},
@@ -94,16 +93,24 @@ export default {
         }
       },
 
+      mounted () {
+        this.onGetAllReviews()
+      },
+
     methods: {
         ...mapActions({
-          getAllReviews: "room/getAllReviews",
-          approveReview: 'managing/approveReview'
+          getReviews: "managing/getReviews",
+          authenticateReview: 'managing/authenticateReview'
         }),
 
         async onApproveReview (item) {
-          const data = { item }
-          const handler = new ApiHandler().setData(data)
-          await this.approveReview(handler)
+          const data = { post_id: item._id }
+          const handler = new ApiHandler()
+                        .setData(data)
+                        .setOnResponse(() => {
+                          item.authenticate = true
+                        })
+          await this.authenticateReview(handler)
         },
 
         async onGetAllReviews (getFullPage = false) {
@@ -129,7 +136,7 @@ export default {
         //     await this.getPosts({ handler, query })
         //   }
 
-            await this.getAllReviews(handler)
+            await this.getReviews(handler)
         },
 
         customSortAndPaginate(sortBy, sortDesc) {
