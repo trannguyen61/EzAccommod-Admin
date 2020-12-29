@@ -6,7 +6,8 @@ import {
     API_GET_REVIEWS,
     API_AUTHENTICATE_REVIEW,
     API_GET_OWNERS,
-    API_AUTHENTICATE_USER
+    API_AUTHENTICATE_USER,
+    API_GET_REPORTS
 } from '@/api/apiUrl'
 
 export default $axios => ({
@@ -26,8 +27,8 @@ export default $axios => ({
         // return $axios.get(API_GET_ROOM_LIST)
     },
 
-    getReports (payload) {
-        // return $axios.get(API_GET_ROOM_LIST)
+    getReports () {
+        return $axios.get(API_GET_REPORTS)
     },
 
     resolveReport (payload) {

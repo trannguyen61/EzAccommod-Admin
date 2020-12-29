@@ -16,12 +16,15 @@
         <template #item.report="{ item }">
           <ul>
             <li
-              v-for="rep in item.report"
+              v-for="rep in item.type"
               :key="rep"
             >
               {{ violations.find(e => e.id == rep).text }}
             </li>
           </ul>
+        </template>
+        <template #item.createdTime="{ item }">
+          {{ onFormatISOdate(item.createdTime.split('T')[0]) }}
         </template>
         <template #item.resolve="{ item }">
           <button
@@ -56,6 +59,7 @@
 </template>
 
 <script>
+import { formatISOdate } from '@/helpers/dateHelper'
 import { ROOM_VIOLATIONS } from '@/consts/consts'
 import ApiHandler from '@/helpers/ApiHandler'
 import { mapActions } from 'vuex'
@@ -66,22 +70,16 @@ export default {
 
     data () {
         return {
-            reports: [{
-                id: '123',
-                report: [1, 3],
-                reason: 'Phòng trọ rất chán. Khóc xong rồi thì thôi cất poster bà chủ vào góc.',
-                createdTime: '06/01/2000',
-                resolved: false
-            }],
+            reports: [],
             chosenReport: null,
             totalItems: 10,
             loading: false,
             headers: [
-              { text: "ID", value: "id", width: '8%' },
+              { text: "ID", value: "_id", width: '8%' },
+              { text: "ID bài đăng", value: "postReported._id", width: '8%' },
               { text: "Lý do", value: "report"},
-              { text: "Chi tiết", value: "reason", sortable: false },
+              { text: "Chi tiết", value: "detail", sortable: false },
               { text: "Ngày báo cáo", value: "createdTime", width: '10%' },
-              { text: "Trạng thái giải quyết", value: "resolve", width: '10%', filterable: false, sortable: false},
             ],
             options: {},
             violations: ROOM_VIOLATIONS
@@ -97,11 +95,18 @@ export default {
       }
       },
 
+    mounted () {
+      this.onGetReports()
+    },
+
     methods: {
         ...mapActions({
-          getReports: "room/getReposts",
-          resolveReport: 'managing/resolveReport'
+          getReports: "managing/getReports"
         }),
+
+        onFormatISOdate (date) {
+          return formatISOdate(date)
+        },
 
         async onResolveReport (value) {
           const data = { id: value.id }
@@ -115,7 +120,7 @@ export default {
           const handler = new ApiHandler()
             .setOnResponse((data) => {
               this.reports = data.reports
-              this.totalItems = data.total
+              this.totalItems = data.reports.length
             })
             .setOnFinally(() => {
               this.customSortAndPaginate(sortBy, sortDesc, page, itemsPerPage)
@@ -126,11 +131,12 @@ export default {
             page,
             size: itemsPerPage,
           }
-          if (getFullPage) {
-            await this.getReports({ handler })
-          } else {
-            await this.getReports({ handler, query })
-          }
+          // if (getFullPage) {
+          //   await this.getReports({ handler })
+          // } else {
+          //   await this.getReports({ handler, query })
+          // }
+          await this.getReports(handler)
         },
 
         customSortAndPaginate(sortBy, sortDesc) {
