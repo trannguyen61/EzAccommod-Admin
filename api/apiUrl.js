@@ -25,6 +25,7 @@ export const API_PROLONG_TIME_POST = '/prolong-time-post'
 export const API_TOGGLE_ACTIVE = '/toggle-active-post'
 export const API_EDIT_ROOM = '/edit-room'
 export const API_EDIT_POST = '/edit-post'
+export const API_UPLOAD_IMAGE = '/upload-image'
 
 /*
 * MANAGING SERVICES
@@ -32,3 +33,5 @@ export const API_EDIT_POST = '/edit-post'
 export const API_AUTHENTICATE_POST = '/authenticate-post'
 export const API_GET_REVIEWS = API_ADMIN + '/review'
 export const API_AUTHENTICATE_REVIEW = '/authenticate-review'
+export const API_GET_OWNERS = API_ADMIN + API_USER + '/get-all-owner'
+export const API_AUTHENTICATE_USER = '/authenticate-owner'

@@ -506,11 +506,23 @@ export default {
             this.imgsToDelete.push(img)
         },
 
-        async onUploadImage () {
+        async onUploadImage (img, post_id, index) {
+          this.loading = true
+
           const data = new FormData()
-          data.append('image', this.postImgs[0])
+          data.append('image', img)
           const handler = new ApiHandler()
-                          .setData(data)
+                          .setData({
+                            data,
+                            post_id
+                          })
+                          .setOnFinally(() => {
+                            if (index == this.postImgs.length - 1) {
+                              this.loading = false
+                              if (!this.hasExistedPost) this.$router.push('/app/post-list')
+                              else this.$emit('editted')
+                            }
+                          })
           await this.uploadImage(handler)
         },
 
@@ -542,10 +554,9 @@ export default {
             const handler = new ApiHandler()
                             .setData(data)
                             .setOnResponse(res => {
-                                this.$router.push('/app/post-list')
-                            })
-                            .setOnFinally(() => {
-                              this.loading = false
+                              this.postImgs.forEach((e, index) => {
+                                this.onUploadImage(e, res.post._id, index)
+                              })
                             })
             await this.submitPost(handler)
         },
@@ -559,6 +570,7 @@ export default {
             }
             const handler = new ApiHandler()
                             .setData(data)
+                            
             await this.editRoom(handler)
         },
 
@@ -571,10 +583,12 @@ export default {
             }
             const handler = new ApiHandler()
                             .setData(data)
-                            .setOnFinally(() => {
-                              this.loading = false
-                              this.$emit('editted')
+                            .setOnResponse(res => {
+                              this.postImgs.forEach((e, index) => {
+                                this.onUploadImage(e, this.post._id, index)
+                              })
                             })
+                            
             await this.editPost(handler)
         },
 

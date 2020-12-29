@@ -128,12 +128,26 @@ export const actions = {
               title: 'Gửi yêu cầu thành công',
               text: 'Bài đăng của bạn sẽ được cho hiển thị sau khi kiểm duyệt. Cảm ơn bạn đã đăng bài!'
           })
+          return response.data
         } else {
           const errorMessage = response.getErrorMessage()
           throw new CustomError("Có lỗi khi gửi yêu cầu xét duyệt bài đăng", errorMessage)
         }  
     }
     await handler.setOnRequest(onRequest).execute()
+},
+
+async uploadImage ({ commit }, handler) {
+  const onRequest = async () => {
+      const rawData = await this.$roomServices.uploadImage(handler.data)
+      const response = new ResponseHelper(rawData)
+      
+      if (response.isError()) {
+        const errorMessage = response.getErrorMessage()
+        throw new CustomError("Có lỗi khi đăng ảnh", errorMessage)
+      }
+  }
+  await handler.setOnRequest(onRequest).execute()
 },
 
 async editRoom ({ commit }, handler) {

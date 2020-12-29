@@ -23,9 +23,12 @@
         :loading="loading"
         multi-sort
       >
+        <template #item.name="{ item }">
+          {{ `${item.lastName} ${item.firstName}` }}
+        </template>
         <template #item.checked="{ item }">
           <v-icon
-            v-if="item.checked"
+            v-if="item.authenticated"
             color="success"
           >
             fas fa-circle
@@ -39,9 +42,9 @@
         </template>
         <template #item.check="{ item }">
           <button
+            v-if="!item.authenticated"
             v-ripple
             type="button"
-            :disabled="item.checked"
             class="custom-btn custom-btn--text custom-btn__densed"
             @click="onEnableAccount(item)"
           >
@@ -71,28 +74,18 @@ export default {
 
     data () {
         return {
-            accounts: [{
-                id: '123',
-                name: 'Nakayama Haruki',
-                identityNum: '12121212',
-                address: 'Giữa Hồ Gươm - Hoàn Kiếm - Hà Nội',
-                phone: '113',
-                email: 'ur_mom_gay@gmail.com',
-                createdTime: '06-01-2000',
-                checked: false
-            }],
+            accounts: [],
             chosenAcc: null,
             totalItems: 10,
             loading: false,
             search: null,
             headers: [
-              { text: "ID", value: "id", width: "5%"},
+              { text: "ID", value: "_id", width: "5%"},
               { text: "Họ tên", value: "name", width: "15%" },
-              { text: "CCCD/CMND", value: "identityNum", width: "8%", sortable: false},
+              { text: "CCCD/CMND", value: "socialID", width: "8%", sortable: false},
               { text: "Địa chỉ thường trú", value: "address", width: "20%", sortable: false},
-              { text: "SĐT", value: "phone", width: "8%", sortable: false},
+              { text: "SĐT", value: "phoneNumber", width: "8%", sortable: false},
               { text: "Email", value: "email", width: "10%"},
-              { text: "Thời gian đăng ký", value: "createdTime" },
               { text: "Trạng thái", value: "checked", filterable: false},
               { text: "Duyệt", value: "check", filterable: false, sortable: false}
             ],
@@ -116,6 +109,10 @@ export default {
         }
       },
 
+      mounted () {
+        this.onGetAccounts()
+      },
+
     methods: {
         ...mapActions({
           getAccounts: "managing/getAccounts",
@@ -125,13 +122,19 @@ export default {
 
         async onFilterAccounts () {
           const data = { search: this.search }
-          const handler = new ApiHandler().setData(data)
+          const handler = new ApiHandler()
+                        .setData(data)
+                    
           await this.filterAccounts(handler)
         },
 
         async onEnableAccount (item) {
-          const data = { item }
-          const handler = new ApiHandler().setData(data)
+          const data = { user_id: item._id }
+          const handler = new ApiHandler()
+                        .setData(data)
+                        .setOnResponse(() => {
+                          item.authenticated = true
+                        })
           await this.enableAccount(handler)
         },
 
@@ -140,8 +143,8 @@ export default {
           const { sortBy, sortDesc, page, itemsPerPage } = this.options
           const handler = new ApiHandler()
             .setOnResponse((data) => {
-              this.accounts = data.accounts
-              this.totalItems = data.total
+              this.accounts = data.users
+              this.totalItems = data.users.length
             })
             .setOnFinally(() => {
               this.customSortAndPaginate(sortBy, sortDesc, page, itemsPerPage)
@@ -152,11 +155,12 @@ export default {
             page,
             size: itemsPerPage,
           }
-          if (getFullPage) {
-            await this.getAccounts({ handler })
-          } else {
-            await this.getAccounts({ handler, query })
-          }
+          // if (getFullPage) {
+          //   await this.getAccounts({ handler })
+          // } else {
+          //   await this.getAccounts({ handler, query })
+          // }
+          await this.getAccounts(handler)
         },
 
         customSortAndPaginate(sortBy, sortDesc) {
