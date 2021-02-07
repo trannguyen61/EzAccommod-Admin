@@ -148,12 +148,15 @@ export default {
 
         async onProlongTimePost () {
             this.loading = true
-            const postPrice = this.postPrice + this.post.postPrice ? this.post.postPrice : 0
+            
+            const postPrice = this.post.postPrice ? 
+              parseInt(this.postPrice.replace('.', '')) + parseInt(this.post.postPrice.replace('.', '')) :
+              +this.postPrice.replace('.', '')
             const data = {  
               post_id: this.post._id,
               data: {
                 expiredAt: this.expiredAt,
-                postPrice
+                postPrice: postPrice + ""
               }
             }
             const handler = new ApiHandler()

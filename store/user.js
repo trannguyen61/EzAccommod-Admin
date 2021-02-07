@@ -4,7 +4,9 @@ import Vue from 'vue'
 
 export const state = () => ({
   access_token: null,
-  user: null
+  user: null,
+  notif: [],
+  unreadNotif: 0
 })
 
 export const getters = {
@@ -26,6 +28,14 @@ export const getters = {
 
   userName(state) {
     return state.user ? `${state.user.lastName} ${state.user.firstName}` : null
+  },
+
+  notif(state) {
+    return state.notif
+  },
+
+  unreadNotif(state) {
+    return state.unreadNotif
   }
 }
 
@@ -48,6 +58,14 @@ export const mutations = {
       localStorage.setItem('user', JSON.stringify(user))
       state.user = user  
     }
+  }, 
+
+  setNotif (state, notif) {
+    state.notif = notif
+  },
+
+  setUnreadNotif (state, number) {
+    state.unreadNotif = number
   }
 }
 
@@ -126,6 +144,36 @@ export const actions = {
         } else {
           const errorMessage = response.getErrorMessage()
           throw new CustomError("Lấy thông tin người dùng thất bại", errorMessage)
+        }  
+      }
+      await handler.setOnRequest(onRequest).execute()
+    },
+
+    async getNotif({ commit }, handler) {
+      const onRequest = async () => {
+        const rawData = await this.$userServices.getNotif(handler.data)
+        const response = new ResponseHelper(rawData)
+        
+        if (response.isSuccess()) {
+          commit('setNotif', response.getData().noti)
+          commit('setUnreadNotif', response.getData().not_seen_noti + "")
+        } else {
+          const errorMessage = response.getErrorMessage()
+          throw new CustomError("Lấy thông báo người dùng thất bại", errorMessage)
+        }  
+      }
+      await handler.setOnRequest(onRequest).execute()
+    },
+
+    async readNotif({ commit }, handler) {
+      const onRequest = async () => {
+        const rawData = await this.$userServices.readNotif(handler.data)
+        const response = new ResponseHelper(rawData)
+        
+        if (response.isSuccess()) {
+        } else {
+          const errorMessage = response.getErrorMessage()
+          throw new CustomError("Lấy thông báo người dùng thất bại", errorMessage)
         }  
       }
       await handler.setOnRequest(onRequest).execute()

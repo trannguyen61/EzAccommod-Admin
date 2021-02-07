@@ -27,11 +27,15 @@
 
         <template #item.detail="{ item }">
           <button
+            v-if="item.authenticate"
             v-ripple
             type="button"
             class="custom-btn custom-btn--text"
           >
-            <a :href="`http://localhost:3000/${item.belongTo._id}`">
+            <a
+              :href="`http://localhost:3000/${item.belongTo ? item.belongTo._id : ''}`"
+              target="__blank"
+            >
               Chi tiết
               <v-icon class="ml-2">
                 fas fa-chevron-right

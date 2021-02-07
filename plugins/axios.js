@@ -12,8 +12,8 @@ export default async ({ $axios, redirect, store, route }) => {
 
   $axios.onError(error => {
     const code = parseInt(error.response && error.response.status)
-    if (code === 401 && !route.path.match(/^\/auth/)) {
-      redirect("/auth/login")
+    if (code === 401) {
+      redirect("/")
     }
     return error.response
   })

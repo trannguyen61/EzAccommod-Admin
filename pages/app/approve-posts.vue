@@ -27,9 +27,9 @@
         </template>
         <template #item.check="{ item }">
           <button
+            v-if="!item.authenticate"
             v-ripple
             type="button"
-            :disabled="item.authenticate"
             class="custom-btn custom-btn--text custom-btn__densed"
             @click="onApprovePost(item)"
           >
@@ -39,11 +39,12 @@
 
         <template #item.detail="{ item }">
           <button
+            v-if="item.authenticate"
             v-ripple
             type="button"
             class="custom-btn custom-btn--text"
           >
-            <a :href="`http://localhost:3000/${item.id}`">
+            <a :href="`http://localhost:3000/${item._id}`">
               Chi tiết
               <v-icon class="ml-2">
                 fas fa-chevron-right
@@ -117,7 +118,7 @@ export default {
 
     methods: {
         ...mapActions({
-          getRoomList: "room/getRoomList",
+          getAllPosts: "room/getAllPosts",
           authenticatePost: 'managing/authenticatePost'
         }),
 
@@ -170,7 +171,7 @@ export default {
           // } else {
           //   await this.getPosts({ handler, query })
           // }
-          await this.getRoomList(handler)
+          await this.getAllPosts(handler)
         },
 
         customSortAndPaginate(sortBy, sortDesc) {

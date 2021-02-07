@@ -14,6 +14,14 @@ a {
   padding: 0 !important;
 }
 
+.noti {
+  background-color: $warning;
+
+  &--seen {
+    background-color: $light;
+  }
+}
+
 .custom-btn {
   border-radius: $border-radius !important;
 

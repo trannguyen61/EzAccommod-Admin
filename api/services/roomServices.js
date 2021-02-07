@@ -9,12 +9,17 @@ import {
     API_TOGGLE_ACTIVE,
     API_EDIT_ROOM,
     API_EDIT_POST,
-    API_UPLOAD_IMAGE
+    API_UPLOAD_IMAGE,
+    API_GET_ALL_POST
 } from '@/api/apiUrl'
 
 export default $axios => ({
     getRoomList () {
         return $axios.get(API_GET_ROOM_LIST)
+    },
+
+    getAllPosts () {
+        return $axios.post(API_GET_ALL_POST)
     },
 
     filterRooms (payload) {

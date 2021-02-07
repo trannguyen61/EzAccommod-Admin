@@ -116,7 +116,7 @@
         <button
           v-ripple
           type="button"
-          :disabled="!formValue1 && (timeFrame || expiredAt)"
+          :disabled="!formValue1 || !expiredAt"
           class="custom-btn custom-btn--text custom-btn__densed stepper-btn"
           @click="step = 2"
         >
@@ -210,8 +210,8 @@
                 @upload-imgs="uploadImgs"
                 @delete-imgs="deleteImgs"
               />
-              <small>Tối thiểu 3 ảnh khái quát về phòng cho thuê</small>
-              <small>(Có thể bổ sung sau khi tạo bài đăng)</small>
+              <!-- <small>Tối thiểu 3 ảnh khái quát về phòng cho thuê</small>
+              <small>(Có thể bổ sung sau khi tạo bài đăng)</small> -->
             </v-col>
           </v-row>
         </v-form>
@@ -403,7 +403,7 @@ export default {
             imgsToDelete: [],
             defaultInfo: {
               hanoiDistricts: HANOI_DISTRICTS,
-              hanoiWards: HANOI_WARDS,
+              hanoiWards: [],
               roomTypes: ROOM_TYPES,
               defaultTimeFrame: DEFAULT_TIME_FRAME,
               cities: CITIES,
@@ -517,7 +517,7 @@ export default {
                             post_id
                           })
                           .setOnFinally(() => {
-                            if (index == this.postImgs.length - 1) {
+                            if (index == this.postImgs.length - 1 || !this.postImgs.length) {
                               this.loading = false
                               if (!this.hasExistedPost) this.$router.push('/app/post-list')
                               else this.$emit('editted')
@@ -558,6 +558,12 @@ export default {
                                 this.onUploadImage(e, res.post._id, index)
                               })
                             })
+                            .setOnFinally(() => {
+                              if (!this.postImgs.length) {
+                                this.loading = false
+                                this.$emit('editted')
+                              }
+                            })
             await this.submitPost(handler)
         },
 
@@ -570,7 +576,12 @@ export default {
             }
             const handler = new ApiHandler()
                             .setData(data)
-                            
+                            .setOnFinally(() => {
+                              if (!this.postImgs.length) {
+                                this.loading = false
+                                this.$emit('editted')
+                              }
+                            })
             await this.editRoom(handler)
         },
 

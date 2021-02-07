@@ -1,6 +1,7 @@
 import {
     API_SIGNUP,
     API_LOGIN,
+    API_GET_NOTIF
 } from '@/api/apiUrl'
 
 export default $axios => ({
@@ -19,6 +20,14 @@ export default $axios => ({
     loginWithFacebook (payload) {
         // return $axios.get(API_GET_ROOM_LIST)
     },
+
+    getNotif () {
+        return $axios.get(API_GET_NOTIF)
+    },
+
+    readNotif ({ id }) {
+        return $axios.get(`${API_GET_NOTIF}/${id}`)
+    }
 })
 
 

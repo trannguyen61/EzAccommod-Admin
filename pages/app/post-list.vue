@@ -34,11 +34,14 @@
         <template #item.expiredAt="{ item }">
           {{ onFormatISOdate(item.expiredAt.split("T")[0]) }}
         </template>
+        <template #item.postPrice="{ item }">
+          {{ item.postPrice ? new Intl.NumberFormat('vi-VN').format(item.postPrice.replace('.', '')) : '' }}
+        </template>
         <template #item.active="{ item }">
           <v-switch
             inset
             :readonly="!item.checked"
-            :input-value="item.active"
+            :input-value="item.status == 'active'"
             @mousedown="onCheckActivePost(item)"
           />
         </template>
@@ -46,7 +49,7 @@
           <button
             v-ripple
             type="button"
-            :disabled="item.checked"
+            :disabled="item.authenticate"
             class="custom-btn custom-btn--text custom-btn__densed"
             @click="onClickEditBtn(item)"
           >
@@ -71,12 +74,15 @@
             type="button"
             class="custom-btn custom-btn--text"
           >
-            <nuxt-link :to="`/${item.id}`">
+            <a
+              :href="`localhost:3000/${item._id}`"
+              target="__blank"
+            >
               Chi tiết
               <v-icon class="ml-2">
                 fas fa-chevron-right
               </v-icon>
-            </nuxt-link>
+            </a>
           </button>
         </template>
         <template #no-data>
@@ -166,6 +172,7 @@ export default {
 
     methods: {
         ...mapActions({
+          getPosts: "room/getPosts",
           toggleActivePost: 'room/toggleActivePost',
           getOwnerRooms: 'room/getOwnerRooms'
         }),
@@ -176,18 +183,20 @@ export default {
 
         onCheckActivePost (item) {
           this.chosenPost = item
-          if (!item.active && (!item.images || !item.images.length)) {
-            this.$refs['confirm-dialog'].open()
-          } else {
-            this.onToggleActivePost()
-          }
+          // if (!item.active && (!item.images || !item.images.length)) {
+          //   this.$refs['confirm-dialog'].open()
+          // } else {
+          //   this.onToggleActivePost()
+          // }
+          this.onToggleActivePost()
         },
 
         async onToggleActivePost () {
+          console.log(this.chosenPost)
           const item = this.chosenPost
-          const data = { post_id: item.id }
+          const data = { post_id: item._id }
           const handler = new ApiHandler().setData(data).setOnResponse(() => {
-            this.chosenPost.active = !item.active
+            this.onGetPosts()
           })
           await this.toggleActivePost(handler)
         },

@@ -16,6 +16,7 @@ export const API_LOGIN = API_USER + '/login'
 * ROOM SERVICES
 */
 export const API_ROOM_SERVICE = '/post'
+export const API_GET_ALL_POST = API_ROOM_SERVICE + '/get-all-posts'
 export const API_GET_ROOM_LIST = API_ROOM_SERVICE
 export const API_CREATE_POST = API_ROOM_SERVICE + '/new-post'
 export const API_CREATE_REVIEW = '/new-review'
@@ -36,3 +37,8 @@ export const API_AUTHENTICATE_REVIEW = '/authenticate-review'
 export const API_GET_OWNERS = API_ADMIN + API_USER + '/get-all-owner'
 export const API_AUTHENTICATE_USER = '/authenticate-owner'
 export const API_GET_REPORTS = API_ADMIN + '/report'
+
+/*
+*   NOTIFICATIONS
+*/
+export const API_GET_NOTIF = '/notification'

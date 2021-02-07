@@ -34,6 +34,21 @@ export const actions = {
         await handler.setOnRequest(onRequest).execute()
     },
 
+    async getAllPosts ({ commit }, handler) {
+      const onRequest = async () => {
+          const rawData = await this.$roomServices.getAllPosts(handler.data)
+          const response = new ResponseHelper(rawData)
+          
+          if (response.isSuccess()) {
+            return response.getData()
+          } else {
+            const errorMessage = response.getErrorMessage()
+            throw new CustomError("Có lỗi khi tải danh sách phòng", errorMessage)
+          }  
+      }
+      await handler.setOnRequest(onRequest).execute()
+    },
+
     async filterRooms ({ commit }, handler) {
         const onRequest = async () => {
             const rawData = await this.$roomServices.filterRooms(handler.data)
@@ -92,7 +107,7 @@ export const actions = {
                 Vue.notify({
                     type: 'success',
                     title: 'Đánh giá thành công',
-                    text: 'Đánh giá của bạn sẽ được cho hiển thị sau khi kiểm duyệt. Cảm ơn bạn đã phản hồi!'
+                    text: 'Bài đăng của bạn đã được đăng thành công.'
                 })
             } else {
               const errorMessage = response.getErrorMessage()

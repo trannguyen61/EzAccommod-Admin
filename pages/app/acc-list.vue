@@ -1,7 +1,7 @@
 <template>
   <div class="acc-list">
     <div class="item--title item--title__secondary-ribbon">
-      Danh sách bài đăng cho thuê phòng
+      Danh sách tài khoản
     </div>
 
     <div class="acc-list--content">
