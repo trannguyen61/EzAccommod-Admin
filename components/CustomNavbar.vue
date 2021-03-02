@@ -165,7 +165,6 @@ export default {
     },
 
     async onReadNotif (noti) {
-      console.log(noti)
       const data = {
         id: noti.ID
       }

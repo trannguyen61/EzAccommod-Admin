@@ -63,7 +63,7 @@
                   />
                   <v-radio
                     :label="'Không có bình nóng lạnh'"
-                    value="0"
+                    value="15"
                   />
                 </v-radio-group>
               </td>
@@ -85,7 +85,7 @@
                   />
                   <v-radio
                     :label="'Không nấu ăn'"
-                    value="0"
+                    value="16"
                   />
                 </v-radio-group>
               </td>
@@ -103,7 +103,7 @@
                   />
                   <v-radio
                     :label="'Không điều hòa'"
-                    value="0"
+                    value="17"
                   />
                 </v-radio-group>
               </td>
@@ -121,7 +121,7 @@
                   />
                   <v-radio
                     :label="'Không ban công'"
-                    value="0"
+                    value="18"
                   />
                 </v-radio-group>
               </td>

@@ -1,7 +1,7 @@
 <template>
   <v-form class="upload-file">
     <label
-      v-if="!previewImgs.length"
+      v-if="!previewImgs.length && !defaultPreviewImgs.length"
       for="file"
       class="upload-label"
     />
@@ -10,8 +10,20 @@
       class="preview-img"
     >
       <v-col
-        v-for="(img, i) in previewImgs"
+        v-for="(img, i) in defaultPreviewImgs"
         :key="i"
+        cols="6"
+        md="4"
+        class="preview-img--img"
+      >
+        <v-img
+          :src="img"
+          aspect-ratio="1.33333333333"
+        />
+      </v-col>
+      <v-col
+        v-for="(img, i) in previewImgs"
+        :key="i + defaultPreviewImgs.length"
         cols="6"
         md="4"
         class="preview-img--img"
@@ -32,7 +44,7 @@
         </v-img>
       </v-col>
       <v-col
-        v-if="previewImgs.length < 6"
+        v-if="previewImgs.length + defaultPreviewImgs.length < 6"
         cols="6"
         md="4"
       >
@@ -127,11 +139,11 @@ export default {
     },
 
     deleteImg (imageIndex) {
-      const src = this.previewImgs[imageIndex].split(FILE_URL)[1]
-      if (src) {
-        const deleteImg = this.defaultPreviewImgs.find(e => e.URL == src)
-        this.$emit('delete-imgs', deleteImg.ID)
-      }
+      // const src = this.previewImgs[imageIndex].split(FILE_URL)[1]
+      // if (src) {
+      //   const deleteImg = this.previewImgs.find(e => e.URL == src)
+      //   this.$emit('delete-imgs', deleteImg.ID)
+      // }
       // if (this.defaultPreviewImgs.findIndex(img) != -1) {
       //   this.$emit('delete-imgs', img.ID)
       // }

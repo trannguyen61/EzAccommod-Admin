@@ -480,6 +480,9 @@ export default {
                   vm.room = vm.post.rooms[0]
                 }
             })
+
+            this.previewImgs = this.post.images
+            
             this.$nextTick(() => {
               this.expiredAt = formatISOdate(this.post.expiredAt.split("T")[0])
             })

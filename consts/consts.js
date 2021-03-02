@@ -146,7 +146,11 @@ export const ROOM_FACILITIES = [
     { name: 'Chung chủ', value: "11"},
     { name: 'Không chung chủ', value: "12"},  
     { name: 'Phòng tắm chung', value: "13"}, 
-    { name: 'Điện nước giá thuê', value: "14" }, 
+    { name: 'Điện nước giá thuê', value: "14" },
+    { name: 'Không có bình nóng lạnh', value: "15" }, 
+    { name: 'Không nấu ăn', value: "16" }, 
+    { name: 'Không điều hòa', value: "17" }, 
+    { name: 'Không ban công', value: "18" }, 
 ]
 export const ROOM_VIOLATIONS = [
     { id: "1", text: 'Thông tin không chính xác' },

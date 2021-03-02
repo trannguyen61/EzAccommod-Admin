@@ -27,13 +27,12 @@
 
         <template #item.detail="{ item }">
           <button
-            v-if="item.authenticate"
             v-ripple
             type="button"
             class="custom-btn custom-btn--text"
           >
             <a
-              :href="`http://localhost:3000/${item.belongTo ? item.belongTo._id : ''}`"
+              :href="`https://ezaccommod.herokuapp.com/${item.belongTo ? item.belongTo._id : ''}`"
               target="__blank"
             >
               Chi tiết
@@ -122,7 +121,7 @@ export default {
           const { sortBy, sortDesc, page, itemsPerPage } = this.options
           const handler = new ApiHandler()
             .setOnResponse((data) => {
-              this.reviews = data.reviews
+              this.reviews = data.reviews.filter(e => !e.authenticate)
               this.totalItems = data.reviews.length
             })
             .setOnFinally(() => {
@@ -144,8 +143,10 @@ export default {
         },
 
         customSortAndPaginate(sortBy, sortDesc) {
+          if (!this.reviews.length) return
+
           if (sortBy.length === 1 && sortDesc.length === 1) {
-            this.rooms = this.rooms.sort((a, b) => {
+            this.reviews = this.reviews.sort((a, b) => {
               const sortA = a[sortBy[0]]
               const sortB = b[sortBy[0]]
 

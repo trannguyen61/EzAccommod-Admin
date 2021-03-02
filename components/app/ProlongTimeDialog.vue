@@ -148,10 +148,10 @@ export default {
 
         async onProlongTimePost () {
             this.loading = true
-            
+
             const postPrice = this.post.postPrice ? 
-              parseInt(this.postPrice.replace('.', '')) + parseInt(this.post.postPrice.replace('.', '')) :
-              +this.postPrice.replace('.', '')
+              parseInt(this.postPrice.replaceAll('.', '')) + parseInt(this.post.postPrice.replaceAll('.', '')) :
+              +this.postPrice.replaceAll('.', '')
             const data = {  
               post_id: this.post._id,
               data: {
@@ -163,6 +163,7 @@ export default {
                             .setData(data)
                             .setOnResponse(() => {
                               this.close()
+                              this.$emit('prolonged')
                             })
                             .setOnFinally(() => {
                               this.loading = false

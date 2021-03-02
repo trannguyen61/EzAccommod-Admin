@@ -140,8 +140,10 @@ export default {
         },
 
         customSortAndPaginate(sortBy, sortDesc) {
+          if (!this.reports.length) return
+          
           if (sortBy.length === 1 && sortDesc.length === 1) {
-            this.rooms = this.rooms.sort((a, b) => {
+            this.reports = this.reports.sort((a, b) => {
               const sortA = a[sortBy[0]]
               const sortB = b[sortBy[0]]
 

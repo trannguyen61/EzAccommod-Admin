@@ -75,7 +75,7 @@
             class="custom-btn custom-btn--text"
           >
             <a
-              :href="`localhost:3000/${item._id}`"
+              :href="`https://ezaccommod.herokuapp.com/${item._id}`"
               target="__blank"
             >
               Chi tiết
@@ -192,7 +192,6 @@ export default {
         },
 
         async onToggleActivePost () {
-          console.log(this.chosenPost)
           const item = this.chosenPost
           const data = { post_id: item._id }
           const handler = new ApiHandler().setData(data).setOnResponse(() => {

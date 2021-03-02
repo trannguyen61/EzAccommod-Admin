@@ -7,7 +7,7 @@
     <div class="approve-posts--content">
       <v-data-table
         :headers="headers"
-        :items="rooms"
+        :items="posts"
         :options.sync="options"
         :server-items-length="totalItems"
         :loading="loading"
@@ -44,7 +44,7 @@
             type="button"
             class="custom-btn custom-btn--text"
           >
-            <a :href="`http://localhost:3000/${item._id}`">
+            <a :href="`https://ezaccommod.herokuapp.com/${item._id}`">
               Chi tiết
               <v-icon class="ml-2">
                 fas fa-chevron-right
@@ -77,15 +77,15 @@ export default {
 
     data () {
         return {
-            rooms: [],
+            posts: [],
             totalItems: 10,
             loading: false,
             headers: [
               { text: "Duyệt", value: "check", sortable: false},
               { text: "Phí bài đăng", value: "postPrice", width: '10%'},
               { text: "Loại phòng", value: "type"},
-              { text: "Số phòng", value: "rooms[0].number"},
-              { text: "Diện tích", value: "rooms[0].area"},
+              { text: "Số phòng", value: "posts[0].number"},
+              { text: "Diện tích", value: "posts[0].area"},
               { text: "Địa chỉ", value: "address", sortable: false, width: '15%'},
               { text: "Giá", value: "price"},
               { text: "Hạn đăng", value: "expiredAt"},
@@ -154,7 +154,7 @@ export default {
           const { sortBy, sortDesc, page, itemsPerPage } = this.options
           const handler = new ApiHandler()
             .setOnResponse((data) => {
-              this.rooms = data.posts
+              this.posts = data.posts.filter(e => !e.authenticate)
               this.totalItems = data.posts.length
             })
             .setOnFinally(() => {
@@ -175,8 +175,10 @@ export default {
         },
 
         customSortAndPaginate(sortBy, sortDesc) {
+          if (!this.posts.length) return
+
           if (sortBy.length === 1 && sortDesc.length === 1) {
-            this.rooms = this.rooms.sort((a, b) => {
+            this.posts = this.posts.sort((a, b) => {
               const sortA = a[sortBy[0]]
               const sortB = b[sortBy[0]]
 
