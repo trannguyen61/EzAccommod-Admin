@@ -6,7 +6,8 @@ export const state = () => ({
   access_token: null,
   user: null,
   notif: [],
-  unreadNotif: 0
+  unreadNotif: 0,
+  pusher: false
 })
 
 export const getters = {
@@ -36,6 +37,10 @@ export const getters = {
 
   unreadNotif(state) {
     return state.unreadNotif
+  },
+
+  pusher(state) {
+    return state.pusher
   }
 }
 
@@ -64,31 +69,21 @@ export const mutations = {
     state.notif = notif
   },
 
+  concatNotif (state, notif) {
+    state.notif = [notif, ...state.notif]
+  },
+
   setUnreadNotif (state, number) {
     state.unreadNotif = number
+  },
+
+  setPusher (state, value) {
+    state.pusher = value
   }
 }
 
 export const actions = {
-    async signup({ commit }, handler) {
-      const onRequest = async () => {
-        const rawData = await this.$userServices.signup(handler.data)
-        const response = new ResponseHelper(rawData)
-
-        if (response.isSuccess()) {
-          const { token, user } = response.getData()
-          commit('setAccessToken', token)
-          commit('setUser', user)
-        } else {
-          const errorMessage = response.getErrorMessage()
-          throw new CustomError("Đăng ký thất bại", errorMessage)
-        }
-      }
-
-      await handler.setOnRequest(onRequest).execute()
-    },
-
-    async login({ commit, state }, handler) {
+    async login({ commit, state, dispatch }, handler) {
       const onRequest = async () => {
         const rawData = await this.$userServices.login(handler.data)
         const response = new ResponseHelper(rawData)
@@ -110,43 +105,21 @@ export const actions = {
       await handler.setOnRequest(onRequest).execute()
     },
 
-    async loginWithFacebook({ commit }, handler) {
-      const onRequest = async () => {
-        const rawData = await this.$userServices.loginWithFacebook(handler.data)
-        const response = new ResponseHelper(rawData)
+    getPusher({commit, getters}, vm) {
+      if (getters.pusher) return
 
-        if (response.isSuccess()) {
-          const { access_token } = response.getData()
-          commit('setAccessToken', access_token)
-          return access_token
-        } else {
-          const errorMessage = response.getErrorMessage()
-          throw new CustomError("Đăng nhập thất bại", errorMessage)
-        }
-      }
-      await handler.setOnRequest(onRequest).execute()
-    },
+      var channel = vm.$pusher.subscribe("admin-notification")
+      commit('setPusher', true)
 
-    async fetchUser({ commit }, handler) {
-      const onRequest = async () => {
-        const rawData = await this.$userServices.getUserProfile()
-        const response = new ResponseHelper(rawData)
-        
-        if (response.isSuccess()) {
-          commit('setUser', response.getData())
-          if (!handler.turnOffSuccess) {
-            Vue.notify({
-                type: 'success',
-                title: 'Đăng nhập thành công',
-                text: 'Chào mừng bạn đến với EzAccommod! Chúc bạn có những trải nghiệm tuyệt vời tại trang.'
-            })
-          }
-        } else {
-          const errorMessage = response.getErrorMessage()
-          throw new CustomError("Lấy thông tin người dùng thất bại", errorMessage)
-        }  
-      }
-      await handler.setOnRequest(onRequest).execute()
+      channel.bind("new-post", data => {
+        console.log("this shit work!!", data)
+        commit('concatNotif', data.data.notification)
+        commit('setUnreadNotif', data.data.not_seen_noti)
+      })
+    },  
+
+    removePusher({commit}, vm) {
+      vm.$pusher.unsubscribe('admin-notification')
     },
 
     async getNotif({ commit }, handler) {
@@ -175,6 +148,19 @@ export const actions = {
           const errorMessage = response.getErrorMessage()
           throw new CustomError("Lấy thông báo người dùng thất bại", errorMessage)
         }  
+      }
+      await handler.setOnRequest(onRequest).execute()
+    },
+
+    async readAllNotif({ commit }, handler) {
+      const onRequest = async () => {
+        const rawData = await this.$userServices.readAllNotif(handler.data)
+        const response = new ResponseHelper(rawData)
+        
+        if (response.isError()) {
+          const errorMessage = response.getErrorMessage()
+          throw new CustomError("Lấy thông báo người dùng thất bại", errorMessage)
+        } 
       }
       await handler.setOnRequest(onRequest).execute()
     },

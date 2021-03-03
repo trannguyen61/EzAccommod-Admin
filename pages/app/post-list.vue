@@ -69,7 +69,6 @@
         </template>
         <template #item.detail="{ item }">
           <button
-            v-if="item.authenticate"
             v-ripple
             type="button"
             class="custom-btn custom-btn--text"
@@ -138,9 +137,8 @@ export default {
             totalItems: 10,
             loading: false,
             headers: [
-              { text: "ID phòng", value: "_id" },
+              { text: "ID phòng", value: "rooms[0]._id" },
               { text: "Loại phòng", value: "type", width: "10%" },
-              { text: "Lượt xem", value: "views" },
               { text: "Yêu thích", value: "saved" },
               { text: "Trạng thái duyệt", value: "checked" },
               { text: "Phí bài đăng", value: "postPrice" },
@@ -167,6 +165,7 @@ export default {
     },
 
     mounted () {
+      this.onGetPusher()
       this.onGetPosts()
     },
 
@@ -174,8 +173,13 @@ export default {
         ...mapActions({
           getPosts: "room/getPosts",
           toggleActivePost: 'room/toggleActivePost',
-          getOwnerRooms: 'room/getOwnerRooms'
+          getOwnerRooms: 'room/getOwnerRooms',
+          getPusher: 'user/getPusher'
         }),
+
+        onGetPusher () {
+          this.getPusher(this)
+        },
 
         onFormatISOdate (date) {
           return formatISOdate(date)

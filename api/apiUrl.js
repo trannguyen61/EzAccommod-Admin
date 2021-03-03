@@ -42,3 +42,4 @@ export const API_GET_REPORTS = API_ADMIN + '/report'
 *   NOTIFICATIONS
 */
 export const API_GET_NOTIF = '/notification'
+export const API_READ_ALL_NOTIF = API_GET_NOTIF + '/read-all'

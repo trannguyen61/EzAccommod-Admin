@@ -1,7 +1,8 @@
 import {
     API_SIGNUP,
     API_LOGIN,
-    API_GET_NOTIF
+    API_GET_NOTIF,
+    API_READ_ALL_NOTIF
 } from '@/api/apiUrl'
 
 export default $axios => ({
@@ -27,6 +28,10 @@ export default $axios => ({
 
     readNotif ({ id }) {
         return $axios.get(`${API_GET_NOTIF}/${id}`)
+    },
+
+    readAllNotif (payload) {
+        return $axios.post(API_READ_ALL_NOTIF, payload)
     }
 })
 

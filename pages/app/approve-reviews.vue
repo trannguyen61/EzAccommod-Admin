@@ -97,14 +97,20 @@ export default {
       },
 
       mounted () {
+        this.onGetPusher()
         this.onGetAllReviews()
       },
 
     methods: {
         ...mapActions({
           getReviews: "managing/getReviews",
-          authenticateReview: 'managing/authenticateReview'
+          authenticateReview: 'managing/authenticateReview',
+          getPusher: 'user/getPusher'
         }),
+
+        onGetPusher () {
+          this.getPusher(this)
+        },
 
         async onApproveReview (item) {
           const data = { post_id: item._id }

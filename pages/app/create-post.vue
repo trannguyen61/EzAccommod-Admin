@@ -26,15 +26,27 @@ export default {
       }
     },
 
+    mounted () {
+      this.onGetPusher()
+    },
+
     methods: {
         ...mapActions({
-            submitPost: 'room/submitPost'
+            submitPost: 'room/submitPost',
+            getPusher: 'user/getPusher'
         }),
+
+        onGetPusher () {
+          this.getPusher(this)
+        },
 
         async onSubmitPost (form) {
             const data = form
             const handler = new ApiHandler()
                             .setData(data)
+                            .setOnResponse(() => {
+                              this.$router.push('post-list')
+                            })
             await this.submitPost(handler)
         },
     }

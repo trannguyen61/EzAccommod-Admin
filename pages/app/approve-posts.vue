@@ -44,7 +44,7 @@
             type="button"
             class="custom-btn custom-btn--text"
           >
-            <a :href="`https://ezaccommod.herokuapp.com/${item._id}`">
+            <a :href="`https://ezaccommod.herokuapp.com/${item.rooms[0]._id}`">
               Chi tiết
               <v-icon class="ml-2">
                 fas fa-chevron-right
@@ -84,14 +84,13 @@ export default {
               { text: "Duyệt", value: "check", sortable: false},
               { text: "Phí bài đăng", value: "postPrice", width: '10%'},
               { text: "Loại phòng", value: "type"},
-              { text: "Số phòng", value: "posts[0].number"},
-              { text: "Diện tích", value: "posts[0].area"},
+              { text: "Số phòng", value: "rooms[0].number"},
+              { text: "Diện tích", value: "rooms[0].area"},
               { text: "Địa chỉ", value: "address", sortable: false, width: '15%'},
               { text: "Giá", value: "price"},
               { text: "Hạn đăng", value: "expiredAt"},
-              { text: "ID phòng", value: "_id", sortable: false},
+              { text: "ID phòng", value: "rooms[0]._id", sortable: false},
               { text: "ID chủ", value: "author._id", sortable: false},
-              { text: "Xem bài đăng", value: "detail", sortable: false, width: '10%'},
             ],
             options: {},
             defaultRoom: {
@@ -113,14 +112,20 @@ export default {
     },
 
     mounted () {
+      this.onGetPusher()
       this.onGetPosts()
     },
 
     methods: {
         ...mapActions({
           getAllPosts: "room/getAllPosts",
-          authenticatePost: 'managing/authenticatePost'
+          authenticatePost: 'managing/authenticatePost',
+          getPusher: 'user/getPusher'
         }),
+
+        onGetPusher () {
+          this.getPusher(this)
+        },
 
         getFullAddress (item) {
           const findCity = this.defaultRoom.cities.find(e => e.id == item.address.city)
@@ -144,7 +149,7 @@ export default {
           const handler = new ApiHandler()
                           .setData(data)
                           .setOnResponse(() => {
-                            item.authenticate = true
+                            this.onGetPosts()
                           })
           await this.authenticatePost(handler)
         },

@@ -28,7 +28,8 @@ export default {
     '@/plugins/axios.js',
     '@/plugins/services.js',
     { src: '@/plugins/nuxt-client-init.js', ssr: false },
-    { src: '@/plugins/notification.js', ssr: false }
+    { src: '@/plugins/notification.js', ssr: false },
+    '@/plugins/pusher.js',
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)

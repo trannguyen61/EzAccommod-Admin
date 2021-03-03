@@ -34,13 +34,35 @@
           </v-btn>
         </template>
 
-        <v-list>
+        <div
+          v-if="!notif.length"
+          class="text-center mb-3"
+        >
+          Không có thông báo
+        </div>
+
+        <v-list class="notification-bar">
+          <v-btn
+            small
+            text
+            class="d-block ml-auto mr-1 mb-3"
+            @click="onReadAllNotif"
+          >
+            Đánh dấu đọc tất cả
+            <v-icon
+              small
+              class="ml-3"
+            >
+              fas fa-check-double
+            </v-icon>
+          </v-btn>
           <v-list-item
             v-for="noti in notif"
             :key="noti.id"
             :class="getNotiClass(noti)"
           >
-            {{ getNotiText(noti) }}  
+            <small class="mr-3">{{ noti.created ? formatDate(noti.created.split('T')[0]) : '' }}</small>
+            {{ getNotiText(noti) }}
             <v-btn
               v-if="!noti.read"
               class="ml-6"
@@ -115,8 +137,9 @@
 </template>
 
 <script>
-import ApiHandler from '@/helpers/ApiHandler'
-import { mapGetters, mapActions } from 'vuex'
+import ApiHandler from "@/helpers/ApiHandler"
+import { formatISOdate } from '@/helpers/dateHelper'
+import { mapGetters, mapActions } from "vuex"
 
 export default {
   props: {
@@ -126,45 +149,52 @@ export default {
     }
   },
 
-  data () {
+  data() {
     return {
-      menu: false
+      menu: false,
+      formatDate: formatISOdate
     }
   },
 
   computed: {
     ...mapGetters({
-      loggedIn: 'user/loggedIn',
-      notif: 'user/notif',
-      unreadNotif: 'user/unreadNotif'
+      loggedIn: "user/loggedIn",
+      notif: "user/notif",
+      unreadNotif: "user/unreadNotif"
     })
   },
 
   watch: {
-    loggedIn (value) {
+    loggedIn(value) {
       if (value) {
         this.onGetNotif()
       }
     }
   },
 
-  mounted () {
+  mounted() {
     if (this.loggedIn) this.onGetNotif()
-  }, 
+  },
 
   methods: {
     ...mapActions({
-      logout: 'user/logout',
-      getNotif: 'user/getNotif',
-      readNotif: 'user/readNotif'
+      logout: "user/logout",
+      getNotif: "user/getNotif",
+      readNotif: "user/readNotif",
+      removePusher: "user/removePusher",
+      readAllNotif: "user/readAllNotif"
     }),
 
-    async onGetNotif () {
-          const handler = new ApiHandler()
-          await this.getNotif(handler)
+    onRemovePusher() {
+      this.removePusher(this)
     },
 
-    async onReadNotif (noti) {
+    async onGetNotif() {
+      const handler = new ApiHandler()
+      await this.getNotif(handler)
+    },
+
+    async onReadNotif(noti) {
       const data = {
         id: noti.ID
       }
@@ -173,20 +203,30 @@ export default {
       })
       await this.readNotif(handler)
     },
-    
-    async onLogout () {
-      this.logout()
-      this.$router.push('/')
+
+    async onReadAllNotif() {
+      const handler = new ApiHandler().setOnResponse(() => {
+        this.onGetNotif()
+      })
+      await this.readAllNotif(handler)
     },
 
-    getNotiClass (noti) {
-      if (noti.seen) return 'noti--seen'
-      else return 'noti'
+    async onLogout() {
+      this.onRemovePusher()
+      this.logout()
+      this.$router.push("/")
     },
-    
-    getNotiText (noti) {
-      if (noti.type == 'post') return 'Có bài đăng mới cần được xét duyệt.'
-      if (noti.type == 'review') return 'Có bình luận mới cần được xét duyệt'
+
+    getNotiClass(noti) {
+      if (noti.seen) return "noti noti--seen"
+      else if (noti.type == "post") return "noti noti--post"
+      else if (noti.type == "review") return "noti noti--review"
+      else if (noti.type == "report") return "noti noti--report"
+    },
+
+    getNotiText(noti) {
+      if (noti.type == "post") return "Có bài đăng mới cần được xét duyệt."
+      if (noti.type == "review") return "Có bình luận mới cần được xét duyệt"
     }
   }
 }

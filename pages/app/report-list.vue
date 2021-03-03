@@ -96,13 +96,19 @@ export default {
       },
 
     mounted () {
+      this.onGetPusher()
       this.onGetReports()
     },
 
     methods: {
         ...mapActions({
-          getReports: "managing/getReports"
+          getReports: "managing/getReports",
+          getPusher: 'user/getPusher'
         }),
+
+        onGetPusher () {
+          this.getPusher(this)
+        },
 
         onFormatISOdate (date) {
           return formatISOdate(date)

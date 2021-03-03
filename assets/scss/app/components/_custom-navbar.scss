@@ -14,3 +14,35 @@
     margin-right: auto;
   }
 }
+
+.notification-bar {
+  max-height: 70vh;
+  width: 250px;
+
+  @media #{map-get($display-breakpoints, 'md-and-up')} {
+    width: 450px;
+  }
+
+  .noti {
+    padding: 7px 10px;
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+    border-radius: 7px;
+
+    &--post {
+      background-color: $secondary;
+    }
+
+    &--review {
+      background-color: #faedee;
+    }
+
+    &--report {
+      background-color: #faf2f3;
+    }
+
+    &--seen {
+      background-color: $light;
+    }
+  }
+}

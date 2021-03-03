@@ -42,7 +42,7 @@
         </template>
         <template #item.check="{ item }">
           <button
-            v-if="!item.authenticated"
+            v-if="!item.authenticated && item.role != 'admin'"
             v-ripple
             type="button"
             class="custom-btn custom-btn--text custom-btn__densed"
@@ -110,6 +110,7 @@ export default {
       },
 
       mounted () {
+        this.onGetPusher()
         this.onGetAccounts()
       },
 
@@ -117,8 +118,13 @@ export default {
         ...mapActions({
           getAccounts: "managing/getAccounts",
           enableAccount: 'managing/enableAccount',
-          filterAccounts: 'managing/filterAccounts'
+          filterAccounts: 'managing/filterAccounts',
+          getPusher: 'user/getPusher'
         }),
+
+        onGetPusher () {
+          this.getPusher(this)
+        },
 
         async onFilterAccounts () {
           const data = { search: this.search }
