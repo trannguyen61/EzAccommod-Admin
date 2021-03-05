@@ -119,6 +119,7 @@ export const actions = {
     },  
 
     removePusher({commit}, vm) {
+      commit('setPusher', false)
       vm.$pusher.unsubscribe('admin-notification')
     },
 

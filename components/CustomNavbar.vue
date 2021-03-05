@@ -34,13 +34,6 @@
           </v-btn>
         </template>
 
-        <div
-          v-if="!notif.length"
-          class="text-center mb-3"
-        >
-          Không có thông báo
-        </div>
-
         <v-list class="notification-bar">
           <v-btn
             small
@@ -56,12 +49,22 @@
               fas fa-check-double
             </v-icon>
           </v-btn>
+
+          <div
+            v-if="!notif.length"
+            class="text-center mb-3"
+          >
+            Không có thông báo
+          </div>
+
           <v-list-item
             v-for="noti in notif"
             :key="noti.id"
             :class="getNotiClass(noti)"
           >
-            <small class="mr-3">{{ noti.created ? formatDate(noti.created.split('T')[0]) : '' }}</small>
+            <small class="mr-3">{{
+              noti.created ? formatDate(noti.created.split("T")[0]) : ""
+            }}</small>
             {{ getNotiText(noti) }}
             <v-btn
               v-if="!noti.read"
@@ -138,7 +141,7 @@
 
 <script>
 import ApiHandler from "@/helpers/ApiHandler"
-import { formatISOdate } from '@/helpers/dateHelper'
+import { formatISOdate } from "@/helpers/dateHelper"
 import { mapGetters, mapActions } from "vuex"
 
 export default {
@@ -212,7 +215,7 @@ export default {
     },
 
     async onLogout() {
-      this.onRemovePusher()
+      this.onRemovePusher(this)
       this.logout()
       this.$router.push("/")
     },
