@@ -144,7 +144,6 @@ export default {
               { text: "Phí bài đăng", value: "postPrice" },
               { text: "Ngày hết hạn", value: "expiredAt" },
               { text: "Trạng thái cho thuê", value: "active"},
-              { text: "Chỉnh sửa", value: "edit", sortable: false},
               { text: "Gia hạn bài đăng", value: "prolong", sortable: false},
               { text: "Xem bài đăng", value: "detail", sortable: false},
             ],
